@@ -1,0 +1,109 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url("https://fonts.googleapis.com/css2?family=Dongle&family=Mitr:wght@200;300;400;500;600;700&family=Montserrat:ital,wght@0,100..900;1,100..900&family=Noto+Sans+Thai:wght@100..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Oswald:wght@700&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
+
+.poppins-thin {
+  font-family: "Poppins", sans-serif;
+  font-weight: 100;
+  font-style: normal;
+}
+
+.NotoSansThai-regular {
+  font-family: "NotoSansThai";
+}
+
+  
+  *, *:after, *:before {
+    box-sizing: border-box;
+  }
+
+  .wm {
+    width: 45vh;
+    height: 45vh;
+    border-radius: 50%;
+    border: 2vh solid transparent;
+    border-right-color: #35ca2f;
+    border-bottom-color: #35ca2f;
+    margin-top: -6.9230769231vh;
+    margin-left: -6.9230769231vh;
+    position: absolute;
+  }
+
+  .wm::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #ff5b56;
+    border-radius: 50%; /* Set border-radius for a circular shape */
+    clip-path: polygon(100% 0%, 100% 100%, 0% 100%); /* Create a half-circle using clip-path */
+  }
+  
+  .wmStone {
+    
+    position: absolute;
+    width: 100%;
+    height: 50%;
+    bottom: 0;
+    right: 0;
+    transform: rotate(-45deg);
+    transform-origin: 50% 0%;
+    z-index: 1;
+  }
+  .wmStone__item {
+    width: 3%;
+    height: 10%;
+    background: #121212;
+    border-radius: 100%;
+    position: absolute;
+  }
+  .wmStone__item:nth-child(1) {
+    top: 31%;
+    left: 30%;
+    transform: rotate(6deg);
+  }
+  .wmStone__item:nth-child(2) {
+    top: 3%;
+    left: 20%;
+    transform: rotate(33deg);
+  }
+  .wmStone__item:nth-child(3) {
+    top: 34%;
+    left: 50%;
+    transform: rotate(32deg);
+  }
+  .wmStone__item:nth-child(4) {
+    top: 3%;
+    left: 40%;
+    transform: rotate(19deg);
+  }
+  .wmStone__item:nth-child(5) {
+    top: 32%;
+    left: 70%;
+    transform: rotate(21deg);
+  }
+  .wmStone__item:nth-child(6) {
+    top: 5%;
+    left: 60%;
+    transform: rotate(11deg);
+  }
+  .wmStone__item:nth-child(7) {
+    left: 60%;
+    top: 55%;
+    transform: rotate(33deg);
+  }
+  .wmStone__item:nth-child(8) {
+    top: 5%;
+    left: 80%;
+    transform: rotate(16deg);
+  }
+  .wmStone__item:nth-child(9) {
+    left: 40.5%;
+    top: 55%;
+    transform: rotate(12deg);
+  }
+
