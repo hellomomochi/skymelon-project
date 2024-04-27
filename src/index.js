@@ -13,6 +13,7 @@ import Votekm2 from './Votekm2'
 import Votekm3 from './Votekm3'
 import Login from './Login'
 import Register from './Register'
+import Result from './Result';
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
   root.render(
@@ -30,6 +31,7 @@ const root = ReactDOM.createRoot(document.getElementById("root"));
       <Route path="votekm3" element = {<Votekm3 />} />
       <Route path="login" element = {<Login />} />
       <Route path="register" element = {<Register />} />
+      <Route path="result" element = {<Result />} />
     </Routes>
     </BrowserRouter>
   </React.StrictMode>,
