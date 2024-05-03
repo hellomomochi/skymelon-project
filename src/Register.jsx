@@ -3,7 +3,6 @@ import { Link } from "react-router-dom";
 import Layout from './PLayout'
 import axios from 'axios'; //เรียกใช้ API
 
-
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -13,8 +12,8 @@ const RegisterSchema = z.object({
     username: z.string().min(6, { message: "Must have 6 characters" })
         .refine((val) => /[0-9]/g.test(val), { message: "Must have number" })
         .refine((val) => /[a-z]/g.test(val), { message: "Must have characters" }),
-    firstName: z.string(),
-    lastName: z.string(),
+    //firstName: z.string(),
+    //lastName: z.string(),
 
     email: z.string().email(),
 
@@ -22,6 +21,7 @@ const RegisterSchema = z.object({
         .refine((val) => /[0-9]/g.test(val), { message: "Must have number" })
         .refine((val) => /[a-z]/g.test(val), { message: "Must have characters" }),
 })
+
 
 function Register() {
 
@@ -34,8 +34,20 @@ function Register() {
     });
 
     const onSubmit = async (formData) => {
+        try {
+            const response = await axios.post('http://localhost:5000/auth/register', formData);
+            console.log(response.data); // รับข้อมูลที่ส่งกลับมาจากเซิร์ฟเวอร์
+            return <Link to='/'></Link>
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    /*const onSubmit = async (formData) => {
         console.log(formData);
-    }
+    };*/
+
+
 
     useEffect(() => {
         console.log(errors);
@@ -53,8 +65,6 @@ function Register() {
         )
 
     }
-
-
 
 
     return (
@@ -102,17 +112,10 @@ function Register() {
                             <Input register={register("password")} placeholder={"password"} shockName={errors?.password?.message} type='password' />
 
                             {/**กรอบ ปุ่ม Register */}
-                            <div className='mt-[10px] flex flex-col w-[110px] h-[110px]'>
+                            <div className='mt-[10px] flex flex-col w-[105px] h-[40px] justify-center items-center'>
 
-                                <button>
-                                    {/**กรอบรูปเมฆ */}
-                                    <div className='flex flex-col justify-center items-center w-[110px] h-[110px]'>
-                                        <img className='absolute hover:w-[110px] hover:h-[110px] w-[100px] h-[100px]' src='clouds-svgrepo-com.svg' />
-                                        <div className='mt-[18px] drop-shadow-md'>
-                                            Register
-                                        </div>
-                                    </div>
-                                </button>
+                                <button type='submit' className='w-[100px] h-[35px] hover:w-[105px] hover:h-[40px] bg-blue-200 rounded-[5px]'>Register</button>
+
                             </div>
                         </form>
 
