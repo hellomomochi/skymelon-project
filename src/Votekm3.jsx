@@ -1,13 +1,103 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
 import { useParams, useLocation } from 'react-router-dom';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'; //เรียกใช้ API
+
 
 function Vote() {
+    const navigate = useNavigate();
+
+    const [classvote, setClassvote] = useState('ภาพยนตร์ยอดนิยม');
+
+    const [countvote, setCountvote] = useState('');
+    const [error, setError] = useState('');
 
     //ตั้งตัวแปรโดยใช้ useLocation เพื่อในการใส่ข้อความที่ช่อง Input ศิลปิน
     const { state } = useLocation(); // Access artist name from state passed using useNavigate
-    const artistName = state?.artistName;
+    const artistName = state?.artistName
+    const [choice, setChoice] = useState(artistName);
+
+    /*const handleClassvoteChange = (event) => {
+        setClassvote(event.target.value);
+    };*/
+
+    /*const handleChoiceChange = (event) => {
+        setChoice(event.target.value);
+    };
+
+    const handleCountvoteChange = (event) => {
+        setCountvote(event.target.value);
+    };*/
+
+
+    const handleSubmit = async (event) => {
+        console.log('classvote', classvote)
+        console.log('choice', choice)
+        event.preventDefault();
+        try {
+            //1.API classvote
+            const response1 = await axios.post('http://localhost:5000/auth/classvote', {
+                classvote
+            }, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log('classvote OK', response1.data);
+
+
+            //พอ classvote ผ่านก็จะได้ id ของ classvote มาสร้างตัวแปรชื่อเดียวกับ schema มาเก็บค่า id มา
+            const classvoteId = response1.data.id
+            console.log('classvoteId', classvoteId)
+
+            //2.API choice
+            const response2 = await axios.post('http://localhost:5000/auth/choice', {
+                classvoteId, choice
+            }, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log('choice OK', response2.data);
+
+            const choicevoteId = response2.data.id
+            console.log('choicevoteId', choicevoteId)
+
+            // ดึงข้อมูล userId จาก localStorage
+            const userId = localStorage.getItem('userId');
+            console.log('userId', userId)
+            //3.API classvote
+            /*const response3 = await axios.post('http://localhost:5000/auth/vote', {
+                userId: responseUser.data.id, // ดึงค่า userId จาก object 'user'
+                choicevoteId, countvote
+            }, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+
+            console.log('countVote OK', response3.data);
+
+            //navigate("/");
+            navigate("/");*/
+            // Redirect to the home page after successful registration
+        } catch (error) {
+            // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
+            console.error('Vote error:', error);
+
+        }
+    };
+
+
 
     //ใช้ useState เพื่อกำหนดการเลือกของจำนวนโหวต
     const [voteCount, setVoteCount] = useState(1); // Initialize voteCount state with 1
@@ -50,23 +140,26 @@ function Vote() {
                     {/**กรอบส่งคะแนนโหวต */}
                     <div className='mt-[100px] bg-[#ff5b56] h-[500px] md:w-[550px] w-[470] md:rounded-[30px] rounded-[20px] shadow-[4px_4px_rgba(0,0,0,0.6)] flex flex-col items-center bg-opacity-[80%]'>
                         <div className='mt-[10px] md:text-[18px] text-[15px] mx-[70px]'>ร่วมส่งคะแนนโหวตศิลปินในสาขาที่คุณชื่นชอบ</div>
-                        <div className='mt-[30px] text-white self-start md:ml-[200px] ml-[130px] italic'>สาขา</div>
-                        <input value='ภาพยนตร์ยอดนิยม' className='mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'></input>
-                        <div className='mt-[30px] text-white self-start md:ml-[200px]  ml-[130px] italic'>ศิลปิน</div>
+
+                        <form action='#' onSubmit={handleSubmit} className="flex flex-col">
+                            <div className='mt-[30px] text-white md:ml-[60px] ml-[30px] italic'>สาขา</div>
+                            <input value={classvote} key='classvote' required className='self-center mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'></input>
+
+                            <div className='mt-[30px] text-white md:ml-[60px] ml-[30px] italic'>ศิลปิน</div>
 
 
-                        <input className='mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'
-                            value={artistName || ''} />
+                            <input key='choice' required className='self-center mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'
+                                value={choice || ''} />
 
-                        <div className='mt-[30px] text-white self-start md:ml-[240px] ml-[170px] italic'>จำนวน</div>
+                            <div className='mt-[30px] text-white ml-[70px] italic'>จำนวน</div>
 
-                        {/**กำหนด min ของ type number ให้เริ่มต้นที่ 1 ส่วน value ให้อ่านค่าในอีเว้น*/}
-                        <input type='number' min="1" value={voteCount}
-                            onChange={handleVoteChange}
-                            className='mt-[3px] w-[100px] h-[40px] bg-white outline-none hover:outline-[#6B201E] px-[15px] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'></input>
-
+                            {/**กำหนด min ของ type number ให้เริ่มต้นที่ 1 ส่วน value ให้อ่านค่าในอีเว้น*/}
+                            <input type='number' key='countvote' min="1" value={voteCount}
+                                onChange={handleVoteChange}
+                                className='self-center mt-[3px] w-[100px] h-[40px] bg-white outline-none hover:outline-[#6B201E] px-[15px] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)]'></input>
+                        </form>
                         <div className='w-[210px] h-[70px] flex justify-center items-center'>
-                            <button className='mt-[80px] w-[200px] h-[60px] hover:w-[210px] hover:h-[70px] hover:text-black bg-[#7D2D2A] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[20px] hover:text-[25px]'>VOTE</button>
+                            <button type='submit' onClick={handleSubmit} className='mt-[80px] w-[200px] h-[60px] hover:w-[210px] hover:h-[70px] hover:text-black bg-[#7D2D2A] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[20px] hover:text-[25px]'>VOTE</button>
                         </div>
                     </div>
                 </div>

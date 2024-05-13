@@ -1,10 +1,66 @@
-import React from 'react';
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
 import axios from 'axios'; //เรียกใช้ API
 
-
 function Login() {
+
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
+
+    const handleEmailChange = (event) => {
+        setEmail(event.target.value);
+    };
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+    };
+   // console.log('password', password)
+
+    const handleLogout = () => {
+        // ทำการออกจากระบบ โดยรีเซ็ตค่าการเข้าสู่ระบบเป็น false
+        setIsLoggedIn(false);
+        setEmail('');
+        setPassword('');
+    };
+
+    const handleSubmit = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:5000/auth/login', {
+                email,
+                password
+            }, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+
+            const data = response.data;
+
+            setError('');
+            // เก็บ token ใน local storage
+            // ส่วนของการเข้าสู่ระบบสำเร็จ
+            console.log('Login successful');
+            console.log('Token:', data.token);
+            // Redirect to the home page after successful registration
+            setIsLoggedIn(true) // เปลี่ยนสถานะการ login เป็น true
+            //navigate("/");
+
+        } catch (error) {
+            // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
+            setError('Invalid email or password');
+            console.error('Login error:', error);
+            console.log('isLoggedIn3', isLoggedIn)
+
+        }
+    };
+
 
     return (
 
@@ -38,32 +94,47 @@ function Login() {
                     {/**กรอบกล่องเพิ่มชื่อเพลง */}
                     <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[450px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
 
-                        <div className='mt-[30px] mb-[40px] text-[20px] text-[white]'>กรุณาเข้าสู่ระบบ</div>
+                        {/*<div className='mt-[30px] text-[20px] text-[white]'>กรุณาเข้าสู่ระบบ</div>*/}
 
-                        <div className='text-[17px] text-[white] italic font-thin self-start md:ml-[150px] ml-[60px]'>Email</div>
+                        <div className='mt-[20px] mb-[10px] text-[24px]'>{isLoggedIn ? <div className="text-green-600 underline underline-offset-1">Login Success</div> : 'Please Login'}</div>
+                        {isLoggedIn && <div className="text-black md:text-[32px] text-[22px] mt-[60px]">Welcome! All you can VOTE !!!!</div>}
+                        {error && <div className="m-[0px] text-[18px]" style={{ color: 'red' }}>{error}</div>}
+                        {!isLoggedIn ? (
+                            <form action='#' onSubmit={handleSubmit} >
+                                <div className='text-[17px] text-[white] italic font-thin self-start md:ml-[0px] ml-[0px]'>Email</div>
 
-                        <input className='md:hover:w-[403px] hover:w-[303px] hover:h-[41px] mt-[2px] md:w-[400px] w-[300px] h-[40px] bg-white rounded-[5px] placeholder:italic  py-2 pl-2 pr-2 shadow-sm focus:outline-none  focus:ring-sky-500 focus:ring-1'></input>
+                                <input type='email' key="email" placeholder={"email"} value={email} onChange={handleEmailChange} required className='md:hover:w-[403px] hover:w-[303px] hover:h-[41px] mt-[2px] md:w-[400px] w-[300px] h-[40px] bg-white rounded-[5px] placeholder:italic  py-2 pl-2 pr-2 shadow-sm focus:outline-none  focus:ring-sky-500 focus:ring-1'></input>
 
-                        <div className='mt-[40px] text-[17px] text-[white] italic font-thin self-start md:ml-[150px] ml-[60px]'>Password</div>
+                                <div className='mt-[30px] text-[17px] text-[white] italic font-thin self-start md:ml-[0px] ml-[0px]'>Password</div>
 
-                        <input type='password' className='md:hover:w-[403px] hover:w-[303px] hover:h-[41px mt-[2px] md:w-[400px] w-[300px] h-[40px] bg-white rounded-[5px] placeholder:italic  py-2 pl-2 pr-2 shadow-sm focus:outline-none  focus:ring-sky-500 focus:ring-1'></input>
+                                <input placeholder={"password"} key="password" type='password' value={password} onChange={handlePasswordChange} required className='md:hover:w-[403px] hover:w-[303px] hover:h-[41px mt-[2px] md:w-[400px] w-[300px] h-[40px] bg-white rounded-[5px] placeholder:italic  py-2 pl-2 pr-2 shadow-sm focus:outline-none  focus:ring-sky-500 focus:ring-1'></input>
+                            </form>
+
+
+                        ) : (
+                            <button onClick={handleLogout} className="text-white hover:text-slate-300 mb-[40px] border-[2px] border-white rounded-[10px] w-[150px] h-[40px] m-[20px]">ออกจากระบบ</button>
+                        )}
 
                         {/**กรอบ ปุ่ม ส่งรายชื่อ */}
                         <div className='mt-[20px] flex flex-row'>
 
                             {/**ข้างใน ปุ่ม ส่งรายชื่อ */}
-                            <div className=' w-[110px] h-[110px]  '>
-                                {/**กรอบรูปเมฆ */}
-                                <div className='w-[110px] h-[110px] flex justify-center items-center'>
-                                    <img className='absolute hover:w-[110px] hover:h-[110px] w-[100px] h-[100px]' src='clouds-svgrepo-com.svg' />
-                                    <div className=' mt-[23px] drop-shadow-md'>
-                                        Login
+                            <button type='submit' onClick={handleSubmit}>
+                                <div className=' w-[110px] h-[110px] '>
+                                    {/**กรอบรูปเมฆ */}
+                                    <div className='w-[110px] h-[110px] flex justify-center items-center'>
+                                        <img className='absolute hover:w-[110px] hover:h-[110px] w-[100px] h-[100px]' src='clouds-svgrepo-com.svg' />
+                                        <div className=' mt-[23px] drop-shadow-md hover:text-pink-600'>
+                                            Login
+                                        </div>
+
                                     </div>
                                 </div>
-                            </div>
+                            </button>
+
                             {/**สมัครสมาชิก */}
                             <Link to="/register">
-                                <div className='mt-[75px] text-[13px] text-white italic underline decoration-1'>สมัครสมาชิก</div>
+                                <div className='mt-[75px] text-[13px] text-white italic underline decoration-1 hover:text-slate-300'>สมัครสมาชิก</div>
                             </Link>
                         </div>
 
@@ -75,7 +146,7 @@ function Login() {
 
 
                 </div>
-            </div>
+            </div >
         </>
     );
 }

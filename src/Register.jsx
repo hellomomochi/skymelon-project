@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
 import axios from 'axios'; //เรียกใช้ API
 
@@ -25,6 +25,8 @@ const RegisterSchema = z.object({
 
 function Register() {
 
+    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
+
     const {
         register,
         handleSubmit,
@@ -35,9 +37,20 @@ function Register() {
 
     const onSubmit = async (formData) => {
         try {
-            const response = await axios.post('http://localhost:5000/auth/register', formData);
+
+            const response = await axios.post('http://localhost:5000/auth/register', formData, {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
             console.log(response.data); // รับข้อมูลที่ส่งกลับมาจากเซิร์ฟเวอร์
-            return <Link to='/'></Link>
+            //ส่ง user id ไปที่หน้าโหวต
+            // Redirect to the home page after successful registration
+            navigate("/login");
+
+
         } catch (error) {
             console.error(error);
         }
@@ -101,6 +114,7 @@ function Register() {
 
                         <div className='mt-[30px] mb-[10px] text-[20px] text-[white]'>สมัครสมาชิก</div>
                         <form action="#" onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center">
+                            {/*<form action="#" onSubmit={handleSubmit(onSubmit)} className="flex flex-col items-center">*/}
 
 
                             <Input register={register("username")} placeholder={"username"} shockName={errors?.username?.message} />
