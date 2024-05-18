@@ -3,9 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
 import axios from 'axios'; //เรียกใช้ API
 
-function Login() {
+import { setUserid, clearUserid } from "./slice/user";
+import { useDispatch, useSelector } from 'react-redux'
+//Selector : อ่านค่า //Dispatch: เขียนค่า
 
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+function Login() {
+    //สร้างก่อน useSate
+    const dispatch = useDispatch()
+    const user = useSelector((state) => state.user) //สำหรับเรียกใช้ค่า ในหน้านี้จะเช็ค userId ว่ามีมั้ยถ้าไม่มีให้ login
+
+    const [isLoggedIn, setIsLoggedIn] = useState(!!user.userId); // กำหนดค่าเริ่มต้นของ isLoggedIn จาก user
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -18,13 +25,14 @@ function Login() {
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
     };
-   // console.log('password', password)
+    // console.log('password', password)
 
     const handleLogout = () => {
         // ทำการออกจากระบบ โดยรีเซ็ตค่าการเข้าสู่ระบบเป็น false
         setIsLoggedIn(false);
         setEmail('');
         setPassword('');
+        dispatch(clearUserid())
     };
 
     const handleSubmit = async (event) => {
@@ -47,7 +55,28 @@ function Login() {
             // เก็บ token ใน local storage
             // ส่วนของการเข้าสู่ระบบสำเร็จ
             console.log('Login successful');
-            console.log('Token:', data.token);
+            const tokenS = data.token
+            console.log('TokenK:', tokenS);
+
+            // Set Authorization header for subsequent requests
+            axios.defaults.headers.common['Authorization'] = tokenS;
+
+            const response2 = await axios.get('http://localhost:5000/user/profile', {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "Authorization": tokenS // เพิ่ม Authorization header ด้วย Token
+                }
+            });
+
+            const data2 = response2.data;
+            console.log('TokenB:', data2.token);
+            console.log('User ID:', data2.id);
+            const userID = data2.id
+
+            // dispatch action เพื่อบันทึก userID ลงใน state
+            dispatch(setUserid({ userId: userID }));
             // Redirect to the home page after successful registration
             setIsLoggedIn(true) // เปลี่ยนสถานะการ login เป็น true
             //navigate("/");

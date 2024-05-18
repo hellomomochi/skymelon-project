@@ -1,11 +1,15 @@
 import Layout from './PLayout'
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import axios from 'axios'; //เรียกใช้ API
 
-
+import { useDispatch, useSelector } from 'react-redux'
 
 function Tird() {
+    const user = useSelector((state) => state.user) //สำหรับเรียกใช้ค่า
 
+    const [isLoggedIn, setIsLoggedIn] = useState(!!user.userId); // กำหนดค่าเริ่มต้นของ isLoggedIn จาก user
+    const [checkAddmin, setAddmin] = useState(user.userId);
 
     //ตั้งตัวแปรโดยใช้ useNavigate เพื่อลิ้งค์เข้าสู่ในการใส่ข้อความอัตโนมัติที่ช่อง Input ศิลปิน ที่หน้าเพจ vote
     const [artistName, setArtistName] = useState('');
@@ -72,12 +76,30 @@ function Tird() {
     const [reartistName5, resetArtistName5] = useState('') //เมื่อคลิก ปุ่ม change
 
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
-    const handleClickChange1 = () => {
+    const handleClickChange1 = async (event) => {
         resetArtistName2(artistName2)
         if (selectedImage1) {
             resetSelectedImage1(selectedImage1); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
+        event.preventDefault();
+        try {
+            const formData = new FormData();
+            formData.append('avatar', selectedImage1); // Append the selected image to the FormData object
+            const response = await axios.post('http://localhost:5000/profile', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            // Handle successful response
+            console.log('File uploaded successfully:', response.data);
+        } catch (error) {
+            // Handle errors
+            console.error('Error uploading file:', error);
+        }
     }
+
+
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
     const handleClickChange2 = () => {
         resetArtistName3(artistName3)
@@ -99,34 +121,6 @@ function Tird() {
             resetSelectedImage4(selectedImage4); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
     }
-
-
-
-
-
-    useEffect(() => {
-        // โหลดรูปภาพจาก localStorage เมื่อโหลดหน้าเพจ
-        const storedImage1 = localStorage.getItem('selectedImage1');
-        const storedImage2 = localStorage.getItem('selectedImage2');
-        const storedImage3 = localStorage.getItem('selectedImage3');
-        const storedImage4 = localStorage.getItem('selectedImage4');
-
-        if (storedImage1) {
-            setSelectedImage1(storedImage1);
-        }
-
-        if (storedImage2) {
-            setSelectedImage2(storedImage2);
-        }
-
-        if (storedImage3) {
-            setSelectedImage3(storedImage3);
-        }
-
-        if (storedImage4) {
-            setSelectedImage4(storedImage4);
-        }
-    }, []);
 
     return (
 
@@ -194,19 +188,23 @@ function Tird() {
                             </div>
 
                             {/**เลือกไฟล์รูป 1 */}
-                            <input type='file' onChange={handleFileChange1} className='w-[150px] h-[23px] text-[8px]'></input>
+
+                            {(checkAddmin == 1) &&
+                                <form action="/profile" method="post" enctype="multipart/form-data" onSubmit={handleClickChange1}>
+                                    <input type='file' onChange={handleFileChange1} name="avatar" key='avatar' className='w-[150px] h-[23px] text-[8px]'></input></form>
+                            }
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
-                                <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
-                                    value={artistName2} onChange={(event) => setArtistName2(event.target.value)}></input>
+                                {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
+                                    value={artistName2} onChange={(event) => setArtistName2(event.target.value)}></input>}
                                 {/**ปุ่ม change */}
-                                <button id="addButton" onClick={handleClickChange1} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>
+                                {(checkAddmin == 1) && <button id="addButton" type='submit' onClick={handleClickChange1} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>}
                             </div>
 
 
                             {/**ปุ่ม ผู้เข้าชิงคนที่ 1 */}
                             <button className='mb-[40px] w-[300px] h-[60px] bg-none opacity-100 border-black border-[2px] rounded-[30px] hover:bg-black hover:opacity-25 hover:text-white hover:border-white'
-                                onClick={() => handleArtistClick(reartistName2)}
+                                onClick={() => !!isLoggedIn ? handleArtistClick(reartistName2) : navigate('/login')}
                             >{reartistName2}</button> {/**เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความของปุ่มนี้ด้วย */}
 
 
@@ -224,18 +222,18 @@ function Tird() {
                             </div>
 
                             {/**เลือกไฟล์รูป 2 */}
-                            <input type='file' onChange={handleFileChange2} className='w-[150px] h-[23px] text-[8px]'></input>
+                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange2} className='w-[150px] h-[23px] text-[8px]'></input>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
-                                <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
-                                    value={artistName3} onChange={(event) => setArtistName3(event.target.value)}></input>
+                                {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
+                                    value={artistName3} onChange={(event) => setArtistName3(event.target.value)}></input>}
                                 {/**ปุ่ม change */}
-                                <button id="addButton" onClick={handleClickChange2} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>
+                                {(checkAddmin == 1) && <button id="addButton" onClick={handleClickChange2} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>}
                             </div>
 
                             {/** ปุ่ม ผู้เข้าชิงคนที่ 2 */}
                             <button className='mb-[40px] w-[300px] h-[60px] bg-none border-black border-[2px] rounded-[30px] hover:bg-black hover:opacity-25 hover:text-white hover:border-white'
-                                onClick={() => handleArtistClick(reartistName3)}
+                                onClick={() => !!isLoggedIn ? handleArtistClick(reartistName3) : navigate('/login')}
                             >{reartistName3}</button>{/**เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความของปุ่มนี้ด้วย */}
 
                         </div>
@@ -258,18 +256,18 @@ function Tird() {
                             </div>
 
                             {/**เลือกไฟล์รูป 3 */}
-                            <input type='file' onChange={handleFileChange3} className='w-[150px] h-[23px] text-[8px]'></input>
+                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange3} className='w-[150px] h-[23px] text-[8px]'></input>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
-                                <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
-                                    value={artistName4} onChange={(event) => setArtistName4(event.target.value)}></input>
+                                {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
+                                    value={artistName4} onChange={(event) => setArtistName4(event.target.value)}></input>}
                                 {/**ปุ่ม change */}
-                                <button id="addButton" onClick={handleClickChange3} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>
+                                {(checkAddmin == 1) && <button id="addButton" onClick={handleClickChange3} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>}
                             </div>
 
                             {/**ปุ่ม ผู้เข้าชิงคนที่ 3 */}
                             <button className='mb-[40px] w-[300px] h-[60px] bg-none border-black border-[2px] rounded-[30px] hover:bg-black hover:opacity-25 hover:text-white hover:border-white'
-                                onClick={() => handleArtistClick(reartistName4)}
+                                onClick={() => !!isLoggedIn ? handleArtistClick(reartistName4) : navigate('/login')}
                             >{reartistName4}</button>{/**เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความของปุ่มนี้ด้วย */}
 
                         </div>
@@ -287,19 +285,19 @@ function Tird() {
                             </div>
 
                             {/**เลือกไฟล์รูป 4 */}
-                            <input type='file' onChange={handleFileChange4} className='w-[150px] h-[23px] text-[8px]'></input>
+                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange4} className='w-[150px] h-[23px] text-[8px]'></input>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
-                                <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
-                                    value={artistName5} onChange={(event) => setArtistName5(event.target.value)}></input>
+                                {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
+                                    value={artistName5} onChange={(event) => setArtistName5(event.target.value)}></input>}
                                 {/**ปุ่ม change */}
-                                <button id="addButton" onClick={handleClickChange4} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>
+                                {(checkAddmin == 1) && <button id="addButton" onClick={handleClickChange4} className='self-start w-[50px] h-[23px] rounded-[18px] bg-red-500 flex justify-center items-center text-white text-[10px]'>Change</button>}
                             </div>
 
                             {/** ปุ่ม ผู้เข้าชิงคนที่ 4 */}
 
                             <button className='mb-[40px] w-[300px] h-[60px] bg-none border-black border-[2px] rounded-[30px] hover:bg-black hover:opacity-25 hover:text-white hover:border-white'
-                                onClick={() => handleArtistClick(reartistName5)}
+                                onClick={() => !!isLoggedIn ? handleArtistClick(reartistName5) : navigate('/login')}
                             >{reartistName5}</button>{/**เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความของปุ่มนี้ด้วย */}
 
                         </div>
