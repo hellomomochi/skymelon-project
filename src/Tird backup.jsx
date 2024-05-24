@@ -23,14 +23,13 @@ function Tird() {
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage1, setSelectedImage1] = useState(null);
     const [reselectedImage1, resetSelectedImage1] = useState(null);
-    const handleFileChange1 = (e) => {
-        if (e.target.files) {
-            setSelectedImage1(e.target.files[0]);
-        }
-    };
-
-    const handleUpload = async () => {
-        // We will fill this out later
+    const handleFileChange1 = (event) => {
+        const file = event.target.files[0];
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            setSelectedImage1(e.target.result);
+        };
+        reader.readAsDataURL(file);
     };
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage2, setSelectedImage2] = useState(null);
@@ -53,7 +52,7 @@ function Tird() {
             setSelectedImage3(e.target.result);
         };
         reader.readAsDataURL(file);
-        console.log('file', reader.readAsDataURL(file))
+        console.log('file',reader.readAsDataURL(file))
     };
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage4, setSelectedImage4] = useState(null);
@@ -79,16 +78,12 @@ function Tird() {
 
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
     const handleClickChange1 = async (event) => {
-        //ชื่อศิลปินที่จะลิ้งไปหน้าโหวต
         resetArtistName2(artistName2)
         if (selectedImage1) {
             resetSelectedImage1(selectedImage1); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
-
-        //รูปศิลปินอัพโหวตเข้าเซิร์ฟเวอร์ backend
         event.preventDefault();
         try {
-
             const formData = new FormData();
             formData.append('avatar', selectedImage1); // Append the selected image to the FormData object
             const response = await axios.post('http://localhost:5000/profile', formData, {
@@ -97,41 +92,12 @@ function Tird() {
                 },
             });
 
-            if (!selectedImage1) {
-                console.log('please input File')
-                return
-            }
-
             // Handle successful response
-            console.log('File uploaded successfully:', response.data.urlImage1);
-            resetSelectedImage1(response.data.urlImage1)
-
+            console.log('File uploaded successfully:', response.data);
         } catch (error) {
             // Handle errors
             console.error('Error uploading file:', error);
         }
-
-        try {
-
-            const response2 = await axios.get('http://localhost:5000/profile', {
-                headers: {
-                    "Access-Control-Allow-Origin": "*",
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                }
-            });
-            if (!response2.data.urlImage1) {
-                console.log('No data');
-            }
-            // Handle successful response
-            console.log('File uploaded successfully:', response2.data.urlImage1);
-            resetSelectedImage1(response2.data.urlImage1)
-
-        } catch (error) {
-            // Handle errors
-            console.error('Error showing file:', error);
-        }
-
     }
 
 
@@ -156,17 +122,6 @@ function Tird() {
             resetSelectedImage4(selectedImage4); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
     }
-
-    useEffect(() => {
-
-        const storedImageUrl = localStorage.getItem('reselectedImage1');
-        if (storedImageUrl) {
-            setSelectedImage1(storedImageUrl);
-        }
-    }, []);
-
-
-
 
     return (
 
@@ -229,9 +184,8 @@ function Tird() {
                             <div className='mb-[40px] w-[300px] h-[400px]'>
                                 {/**ข้างในรูปผู้เข้าชิงแถว 1 คนที่ 1 */}
                                 <div className='mt-[2px] w-[300px] h-[400px] shadow-[10px_10px_rgba(0,0,0,0.2)] hover:shadow-[10px_10px_30px_rgb(229,242,5)]'>
-                                    {reselectedImage1 && <img className='bg-cover' src={reselectedImage1} alt='รูปภาพที่เลือก' />}
+                                    <img className='bg-cover' src={reselectedImage1} alt='รูปภาพที่เลือก' />
                                 </div>
-
                             </div>
 
                             {/**เลือกไฟล์รูป 1 */}
@@ -240,7 +194,6 @@ function Tird() {
                                 <form action="/profile" method="post" enctype="multipart/form-data" onSubmit={handleClickChange1}>
                                     <input type='file' onChange={handleFileChange1} name="avatar" key='avatar' className='w-[150px] h-[23px] text-[8px]'></input></form>
                             }
-
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
                                 {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
