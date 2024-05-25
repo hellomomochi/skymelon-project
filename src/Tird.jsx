@@ -29,42 +29,29 @@ function Tird() {
         }
     };
 
-    const handleUpload = async () => {
-        // We will fill this out later
-    };
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage2, setSelectedImage2] = useState(null);
     const [reselectedImage2, resetSelectedImage2] = useState(null);
-    const handleFileChange2 = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            setSelectedImage2(e.target.result);
-        };
-        reader.readAsDataURL(file);
+    const handleFileChange2 = (e) => {
+        if (e.target.files) {
+            setSelectedImage2(e.target.files[0]);
+        }
     };
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage3, setSelectedImage3] = useState(null);
     const [reselectedImage3, resetSelectedImage3] = useState(null);
-    const handleFileChange3 = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            setSelectedImage3(e.target.result);
-        };
-        reader.readAsDataURL(file);
-        console.log('file', reader.readAsDataURL(file))
+    const handleFileChange3 = (e) => {
+        if (e.target.files) {
+            setSelectedImage3(e.target.files[0]);
+        }
     };
     //ให้รูปภาพโชว์เมื่อคลิก Change
     const [selectedImage4, setSelectedImage4] = useState(null);
     const [reselectedImage4, resetSelectedImage4] = useState(null);
-    const handleFileChange4 = (event) => {
-        const file = event.target.files[0];
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            setSelectedImage4(e.target.result);
-        };
-        reader.readAsDataURL(file);
+    const handleFileChange4 = (e) => {
+        if (e.target.files) {
+            setSelectedImage4(e.target.files[0]);
+        }
     };
 
     {/**text ปุ่ม ศิลปิน */ }
@@ -120,12 +107,12 @@ function Tird() {
                     "Content-Type": "application/json",
                 }
             });
-            if (!response2.data.urlImage1) {
+            if (!response2.data.url) {
                 console.log('No data');
             }
             // Handle successful response
-            console.log('File uploaded successfully:', response2.data.urlImage1);
-            resetSelectedImage1(response2.data.urlImage1)
+            console.log('File uploaded successfully:', response2.data.url);
+            resetSelectedImage1(response2.data.url)
 
         } catch (error) {
             // Handle errors
@@ -136,34 +123,258 @@ function Tird() {
 
 
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
-    const handleClickChange2 = () => {
+    const handleClickChange2 = async (event) => {
         resetArtistName3(artistName3)
         if (selectedImage2) {
             resetSelectedImage2(selectedImage2); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
+
+        //รูปศิลปินอัพโหวตเข้าเซิร์ฟเวอร์ backend
+        event.preventDefault();
+        try {
+
+            const formData = new FormData();
+            formData.append('avatarkm32', selectedImage2); // Append the selected image to the FormData object
+            const response = await axios.post('http://localhost:5000/profilekm32', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (!selectedImage2) {
+                console.log('please input File')
+                return
+            }
+
+            // Handle successful response
+            console.log('File uploaded successfully:', response.data.urlImage1);
+            resetSelectedImage2(response.data.urlImage1)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error uploading file:', error);
+        }
+
+        try {
+
+            const response2 = await axios.get('http://localhost:5000/profilekm32', {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response2.data.url) {
+                console.log('No data');
+            }
+            // Handle successful response
+            console.log('File uploaded successfully:', response2.data.url);
+            resetSelectedImage2(response2.data.url)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error showing file:', error);
+        }
     }
+
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
-    const handleClickChange3 = () => {
+    const handleClickChange3 = async (event) => {
         resetArtistName4(artistName4)
         if (selectedImage3) {
             resetSelectedImage3(selectedImage3); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
         }
+        //รูปศิลปินอัพโหวตเข้าเซิร์ฟเวอร์ backend
+        event.preventDefault();
+        try {
+
+            const formData = new FormData();
+            formData.append('avatarkm33', selectedImage3); // Append the selected image to the FormData object
+            const response = await axios.post('http://localhost:5000/profilekm33', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (!selectedImage3) {
+                console.log('please input File')
+                return
+            }
+
+            // Handle successful response
+            console.log('File uploaded successfully:', response.data.urlImage1);
+            resetSelectedImage3(response.data.urlImage1)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error uploading file:', error);
+        }
+
+        try {
+
+            const response2 = await axios.get('http://localhost:5000/profilekm33', {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response2.data.url) {
+                console.log('No data');
+            }
+            // Handle successful response
+            console.log('File uploaded successfully:', response2.data.url);
+            resetSelectedImage4(response2.data.url)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error showing file:', error);
+        }
     }
     //event handleClick เมื่อคลิกปุ่ม change จะเปลี่ยนข้อความและรูปภาพ
-    const handleClickChange4 = () => {
+    const handleClickChange4 = async (event) => {
         resetArtistName5(artistName5)
         if (selectedImage4) {
             resetSelectedImage4(selectedImage4); // เปลี่ยนรูปภาพโดยใช้ URL ที่เก็บไว้
+        }
+        //รูปศิลปินอัพโหวตเข้าเซิร์ฟเวอร์ backend
+        event.preventDefault();
+        try {
+
+            const formData = new FormData();
+            formData.append('avatarkm34', selectedImage4); // Append the selected image to the FormData object
+            const response = await axios.post('http://localhost:5000/profilekm34', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data',
+                },
+            });
+
+            if (!selectedImage4) {
+                console.log('please input File')
+                return
+            }
+
+            // Handle successful response
+            console.log('File uploaded successfully:', response.data.urlImage1);
+            resetSelectedImage4(response.data.urlImage1)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error uploading file:', error);
+        }
+
+        try {
+
+            const response2 = await axios.get('http://localhost:5000/profilekm34', {
+                headers: {
+                    "Access-Control-Allow-Origin": "*",
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                }
+            });
+            if (!response2.data.url) {
+                console.log('No data');
+            }
+            // Handle successful response
+            console.log('File uploaded successfully:', response2.data.url);
+            resetSelectedImage4(response2.data.url)
+
+        } catch (error) {
+            // Handle errors
+            console.error('Error showing file:', error);
         }
     }
 
     useEffect(() => {
 
-        const storedImageUrl = localStorage.getItem('reselectedImage1');
-        if (storedImageUrl) {
-            setSelectedImage1(storedImageUrl);
-        }
-    }, []);
+        const fetchImage = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/profile', {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                if (!response.data.url) {
+                    console.log('No data');
+                } else {
+                    console.log('File uploaded successfully:', response.data.url);
+                    resetSelectedImage1(response.data.url);
+                }
+            } catch (error) {
+                console.error('Error showing file:', error);
+            }
+        };
+
+        const fetchImagekm32 = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/profilekm32', {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                if (!response.data.url) {
+                    console.log('No data');
+                } else {
+                    console.log('File uploaded successfully:', response.data.url);
+                    resetSelectedImage2(response.data.url);
+                }
+            } catch (error) {
+                console.error('Error showing file:', error);
+            }
+        };
+
+        const fetchImagekm33 = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/profilekm33', {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                if (!response.data.url) {
+                    console.log('No data');
+                } else {
+                    console.log('File uploaded successfully:', response.data.url);
+                    resetSelectedImage3(response.data.url);
+                }
+            } catch (error) {
+                console.error('Error showing file:', error);
+            }
+        };
+
+        const fetchImagekm34 = async () => {
+            try {
+                const response = await axios.get('http://localhost:5000/profilekm34', {
+                    headers: {
+                        "Access-Control-Allow-Origin": "*",
+                        "Accept": "application/json",
+                        "Content-Type": "application/json",
+                    }
+                });
+
+                if (!response.data.url) {
+                    console.log('No data');
+                } else {
+                    console.log('File uploaded successfully:', response.data.url);
+                    resetSelectedImage4(response.data.url);
+                }
+            } catch (error) {
+                console.error('Error showing file:', error);
+            }
+        };
+
+        fetchImage();
+        fetchImagekm32();
+        fetchImagekm33();
+        fetchImagekm34();
+    }, []); // ระบุว่า useEffect ควรถูกเรียกใช้เฉพาะครั้งแรกเท่านั้น
 
 
 
@@ -265,12 +476,14 @@ function Tird() {
                             <div className='mb-[40px] w-[300px] h-[400px]flex flex-col'>
                                 {/**ข้างในรูปผู้เข้าชิงคนที่ 2 */}
                                 <div className='mt-[2px] w-[300px] h-[400px] shadow-[10px_10px_rgba(0,0,0,0.2)] hover:shadow-[10px_10px_30px_rgb(229,242,5)]'>
-                                    <img className='bg-cover' src={reselectedImage2} alt='รูปภาพที่เลือก' />
+                                    {reselectedImage2 && <img className='bg-cover' src={reselectedImage2} alt='รูปภาพที่เลือก' />}
                                 </div>
                             </div>
 
                             {/**เลือกไฟล์รูป 2 */}
-                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange2} className='w-[150px] h-[23px] text-[8px]'></input>}
+                            {(checkAddmin == 1) &&
+                                <form action="/profilekm32" method="post" enctype="multipart/form-data" onSubmit={handleClickChange2}>
+                                    <input type='file' onChange={handleFileChange2} name="avatarkm32" key='avatarkm32' className='w-[150px] h-[23px] text-[8px]'></input></form>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
                                 {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
@@ -299,12 +512,14 @@ function Tird() {
                             <div className='mb-[40px] w-[300px] h-[400px]'>
                                 {/**ข้างในรูปผู้เข้าชิงคนที่ 3 */}
                                 <div className='mt-[2px] w-[300px] h-[400px] shadow-[10px_10px_rgba(0,0,0,0.2)] hover:shadow-[10px_10px_30px_rgb(229,242,5)]'>
-                                    <img className='bg-cover' src={reselectedImage3} alt='รูปภาพที่เลือก' />
+                                    {reselectedImage3 && <img className='bg-cover' src={reselectedImage3} alt='รูปภาพที่เลือก' />}
                                 </div>
                             </div>
 
                             {/**เลือกไฟล์รูป 3 */}
-                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange3} className='w-[150px] h-[23px] text-[8px]'></input>}
+                            {(checkAddmin == 1) &&
+                                <form action="/profilekm33" method="post" enctype="multipart/form-data" onSubmit={handleClickChange3}>
+                                    <input type='file' onChange={handleFileChange3} name="avatarkm33" key='avatarkm33' className='w-[150px] h-[23px] text-[8px]'></input></form>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
                                 {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
@@ -328,12 +543,14 @@ function Tird() {
                             <div className='mb-[40px] w-[300px] h-[400px]flex flex-col'>
                                 {/**ข้างในรูปผู้เข้าชิงคนที่ 4 */}
                                 <div className='mt-[2px] w-[300px] h-[400px] shadow-[10px_10px_rgba(0,0,0,0.2)] hover:shadow-[10px_10px_30px_rgb(229,242,5)]'>
-                                    <img className='bg-cover' src={reselectedImage4} alt='รูปภาพที่เลือก' />
+                                    {reselectedImage4 && <img className='bg-cover' src={reselectedImage4} alt='รูปภาพที่เลือก' />}
                                 </div>
                             </div>
 
                             {/**เลือกไฟล์รูป 4 */}
-                            {(checkAddmin == 1) && <input type='file' onChange={handleFileChange4} className='w-[150px] h-[23px] text-[8px]'></input>}
+                            {(checkAddmin == 1) &&
+                                <form action="/profilekm34" method="post" enctype="multipart/form-data" onSubmit={handleClickChange4}>
+                                    <input type='file' onChange={handleFileChange4} name="avatarkm34" key='avatarkm34' className='w-[150px] h-[23px] text-[8px]'></input></form>}
                             <div className='flex flex-row self-start'>
                                 {/**ให้ input แล้วเก็บค่าให้ให้ปุ่ม change ตอนเปลี่ยน */}
                                 {(checkAddmin == 1) && <input type='text' className='border-none w-[70px] h-[20px] px-[2px] mr-[5px]'
