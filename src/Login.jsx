@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
+import Googlelogin from './components/Googlelogin'
+import Googlelogout from './components/Googlelogout'
 import axios from 'axios'; //เรียกใช้ API
+
+import { gapi } from 'gapi-script' //login google
+//ติตตั้ง npm install gapi-script --legacy-peer-deps
 
 import { setUserid, clearUserid } from "./slice/user";
 import { useDispatch, useSelector } from 'react-redux'
 //Selector : อ่านค่า //Dispatch: เขียนค่า
 
+const clientId = '989711806113-lh64qbra7rv02ut7f6hh8r3dm2f1u60h.apps.googleusercontent.com'; // แทนที่ด้วย Client ID ที่ได้จาก Google Developer Console
+
 function Login() {
+
+    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
+
     //สร้างก่อน useSate
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user) //สำหรับเรียกใช้ค่า ในหน้านี้จะเช็ค userId ว่ามีมั้ยถ้าไม่มีให้ login
@@ -17,6 +27,7 @@ function Login() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+
 
     const handleEmailChange = (event) => {
         setEmail(event.target.value);
@@ -79,7 +90,7 @@ function Login() {
             dispatch(setUserid({ userId: userID }));
             // Redirect to the home page after successful registration
             setIsLoggedIn(true) // เปลี่ยนสถานะการ login เป็น true
-            //navigate("/");
+            navigate("/");
 
         } catch (error) {
             // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
@@ -90,10 +101,20 @@ function Login() {
         }
     };
 
+    useEffect(() => {
+        function start() {
+            gapi.client.init({
+                clientId: clientId,
+                scope: ""
+            })
+        }
+        gapi.load('client:auth2', start)
+    }, []);
+
 
     return (
 
-        <>
+        <div className='flex justify-center'>
             <div className='absolute'>
                 <Layout />
             </div>
@@ -102,26 +123,25 @@ function Login() {
                 <div className='flex flex-col items-center'>
 
                     {/**กรอบ home/login */}
-                    <div className='flex flex-row self-start'>
+                    <div className='flex flex-row'>
 
                         {/**กรอบ Home */}
                         <div className='md:mt-[300px] mt-[400px] self-start w-[200px] h-[30px]'>
                             <Link to="/">
-                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px]'>HOME</button>
+                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px] rounded-[100%]'>HOME</button>
                             </Link>
                         </div>
 
                         {/*กรอบ login*/}
                         <Link to="/login">
-                            <button className='md:mt-[340px] mt-[440px] ml-[100px] w-[100px] h-[30px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce'>เข้าสู่ระบบ</button>
+                            <button className='md:mt-[310px] mt-[410px] ml-[100px] w-[100px] h-[60px] border-gray border-[1px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce rounded-[100%]'>เข้าสู่ระบบ</button>
                         </Link>
 
                     </div>
 
 
-
                     {/**กรอบกล่องเพิ่มชื่อเพลง */}
-                    <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[450px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
+                    <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[500px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
 
                         {/*<div className='mt-[30px] text-[20px] text-[white]'>กรุณาเข้าสู่ระบบ</div>*/}
 
@@ -141,15 +161,20 @@ function Login() {
 
 
                         ) : (
-                            <button onClick={handleLogout} className="text-white hover:text-slate-300 mb-[40px] border-[2px] border-white rounded-[10px] w-[150px] h-[40px] m-[20px]">ออกจากระบบ</button>
+                            <button onClick={handleLogout} className="text-white hover:text-slate-300 border-[2px] border-white rounded-[10px] w-[150px] h-[40px] m-[20px]">ออกจากระบบ</button>
                         )}
 
+                        <div className="my-[10px]">
+                            {!isLoggedIn ? (<Googlelogin />) : (
+                                <Googlelogout />)}
+                        </div>
+
                         {/**กรอบ ปุ่ม ส่งรายชื่อ */}
-                        <div className='mt-[20px] flex flex-row'>
+                        <div className=' flex flex-row '>
 
                             {/**ข้างใน ปุ่ม ส่งรายชื่อ */}
-                            <button type='submit' onClick={handleSubmit}>
-                                <div className=' w-[110px] h-[110px] '>
+                            {!isLoggedIn &&<button type='submit' onClick={handleSubmit}>
+                                <div className=' md:w-[250px] w-[260px] h-[110px] flex justify-end'>
                                     {/**กรอบรูปเมฆ */}
                                     <div className='w-[110px] h-[110px] flex justify-center items-center'>
                                         <img className='absolute hover:w-[110px] hover:h-[110px] w-[100px] h-[100px]' src='clouds-svgrepo-com.svg' />
@@ -159,14 +184,19 @@ function Login() {
 
                                     </div>
                                 </div>
-                            </button>
+                            </button>}
 
-                            {/**สมัครสมาชิก */}
-                            <Link to="/register">
-                                <div className='mt-[75px] text-[13px] text-white italic underline decoration-1 hover:text-slate-300'>สมัครสมาชิก</div>
-                            </Link>
+                            {!isLoggedIn &&<div className="flex flex-row justify-start w-[170px]">
+                                {/**สมัครสมาชิก */}
+                                <Link to="/register">
+                                    <div className='mt-[75px] md:text-[13px] text-[10px] text-white italic underline decoration-1 hover:text-slate-300'>สมัครสมาชิก</div>
+                                </Link>
+                                {/**ลืมรหัสผ่าน */}
+                                <Link to="/ForgotPassword">
+                                    <div className='mt-[75px] mx-[5px] md:text-[13px] text-[10px] text-white italic underline decoration-1 hover:text-slate-300'>ลืมรหัสผ่าน</div>
+                                </Link>
+                            </div>}
                         </div>
-
 
 
                     </div>
@@ -176,7 +206,7 @@ function Login() {
 
                 </div>
             </div >
-        </>
+        </div>
     );
 }
 export default Login;

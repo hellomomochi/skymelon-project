@@ -19,7 +19,7 @@ function Vote() {
 
     const navigate = useNavigate();
 
-    const [classvote, setClassvote] = useState('คู่จิ้นหญิงยอดนิยม');
+    const [classvote, setClassvote] = useState('เพลงฮิตติดหู');
 
     //ใช้ useState เพื่อกำหนดการเลือกของจำนวนโหวต
     const [countvote, setCountvote] = useState(1);
@@ -145,10 +145,10 @@ function Vote() {
                         <div className='mt-[10px] md:text-[18px] text-[15px] mx-[70px] font-Mitr'>ร่วมส่งคะแนนโหวตศิลปินในสาขาที่คุณชื่นชอบ</div>
 
                         <form action='#' onSubmit={handleSubmit} className="flex flex-col">
-                            <div className='mt-[30px] text-white ml-[150px]  italic font-Mitr'>สาขา</div>
+                            <div className='mt-[30px] text-white ml-[150px] italic font-Mitr'>สาขา</div>
                             <input value={classvote} key='classvote' required className='self-center mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)] font-Mitr'></input>
 
-                            <div className='mt-[30px] text-white ml-[150px] italic font-Mitr'>ศิลปิน</div>
+                            <div className='mt-[30px] text-white ml-[130px] italic font-Mitr'>ชื่อเพลง</div>
 
 
                             <input key='choice' required className='self-center mt-[3px] w-[200px] h-[40px] bg-white outline-none px-[15px] hover:outline-[#6B201E] rounded-[20px] shadow-[3px_4px_rgba(0,0,0,0.5)] font-Mitr'

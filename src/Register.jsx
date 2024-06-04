@@ -1,6 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Layout from './PLayout'
+import Count from './time/Count'
 import axios from 'axios'; //เรียกใช้ API
 
 import * as z from "zod";
@@ -27,6 +28,7 @@ function Register() {
 
     const navigate = useNavigate(); // Use useNavigate for programmatic navigation
 
+
     const {
         register,
         handleSubmit,
@@ -37,7 +39,6 @@ function Register() {
 
     const onSubmit = async (formData) => {
         try {
-
             const response = await axios.post('http://localhost:5000/auth/register', formData, {
                 headers: {
                     "Access-Control-Allow-Origin": "*",
@@ -82,7 +83,7 @@ function Register() {
 
     return (
 
-        <>
+        <div className='flex justify-center'>
             <div className='absolute'>
                 <Layout />
             </div>
@@ -91,23 +92,24 @@ function Register() {
                 <div className='flex flex-col items-center'>
 
                     {/**กรอบ home/login */}
-                    <div className='flex flex-row self-start'>
+                    <div className='flex flex-row'>
 
                         {/**กรอบ Home */}
                         <div className='md:mt-[300px] mt-[400px] self-start w-[200px] h-[30px]'>
                             <Link to="/">
-                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px]'>HOME</button>
+                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px] rounded-[100%]'>HOME</button>
                             </Link>
                         </div>
 
                         {/*กรอบ login*/}
                         <Link to="/login">
-                            <button className='md:mt-[340px] mt-[440px] ml-[100px] w-[100px] h-[30px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce'>เข้าสู่ระบบ</button>
+                            <button className='md:mt-[310px] mt-[410px] ml-[100px] w-[100px] h-[60px] border-gray border-[1px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce rounded-[100%]'>เข้าสู่ระบบ</button>
                         </Link>
 
                     </div>
 
-
+                    {/**เวลานับถอยหลัง */}
+                    <Count />
 
                     {/**กรอบกล่องเพิ่มชื่อเพลง */}
                     <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[450px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
@@ -125,11 +127,10 @@ function Register() {
 
                             <Input register={register("password")} placeholder={"password"} shockName={errors?.password?.message} type='password' />
 
+
                             {/**กรอบ ปุ่ม Register */}
-                            <div className='mt-[10px] flex flex-col w-[105px] h-[40px] justify-center items-center'>
-
-                                <button type='submit' className='w-[100px] h-[35px] hover:w-[105px] hover:h-[40px] bg-blue-200 rounded-[5px]'>Register</button>
-
+                            <div className='mt-[20px] flex flex-col w-[105px] h-[40px] justify-center items-center'>
+                                <button type='submit' className='w-[100px] h-[35px] hover:w-[105px] hover:text-yellow-300 hover:h-[40px] hover:bg-sky-500 bg-blue-200 rounded-[5px]'>Register</button>
                             </div>
                         </form>
 
@@ -140,7 +141,7 @@ function Register() {
 
                 </div >
             </div >
-        </>
+        </div>
     );
 }
 export default Register;
