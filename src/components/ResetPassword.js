@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { Link, useParams, useNavigate } from "react-router-dom";
-import Layout from 'C:/Users/ASUS/mochi-frontend/src/PLayout';
 import axios from 'axios';
 
 const ResetPassword = () => {
@@ -25,22 +24,10 @@ const ResetPassword = () => {
 
     return (
         <div className='flex justify-center'>
-            <div className='absolute'>
-                <Layout />
-            </div>
             <div className='absolute w-full md:h-[1820px] h-[2900px]'>
-                <div className='flex flex-col items-center'>
-                    <div className='flex flex-row'>
-                        <div className='md:mt-[300px] mt-[400px] self-start w-[200px] h-[30px]'>
-                            <Link to="/">
-                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px] rounded-[100%]'>HOME</button>
-                            </Link>
-                        </div>
-                        <Link to="/login">
-                            <button className='md:mt-[310px] mt-[410px] ml-[100px] w-[100px] h-[60px] border-gray border-[1px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce rounded-[100%]'>เข้าสู่ระบบ</button>
-                        </Link>
-                    </div>
-                    <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[300px] md:rounded-[100px] rounded-[50px] flex flex-col items-center bg-black bg-opacity-[30%]'>
+                <div className='flex flex-col items-center '>
+
+                    <div className='mt-[450px] mb-[30px] border-[2px] md:w-[700px] w-[400px] h-[300px] md:rounded-[100px] rounded-[50px] flex flex-col items-center bg-black bg-opacity-[30%]'>
                         <div className='mt-[20px] mb-[10px] text-[24px]'>Reset Password</div>
                         <div className="mt-[20px]">
                             <form onSubmit={handleSubmit} className='flex flex-col items-center justify-center'>

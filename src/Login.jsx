@@ -16,8 +16,6 @@ const clientId = '989711806113-lh64qbra7rv02ut7f6hh8r3dm2f1u60h.apps.googleuserc
 
 function Login() {
 
-    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
-
     //สร้างก่อน useSate
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user) //สำหรับเรียกใช้ค่า ในหน้านี้จะเช็ค userId ว่ามีมั้ยถ้าไม่มีให้ login
@@ -44,6 +42,7 @@ function Login() {
         setEmail('');
         setPassword('');
         dispatch(clearUserid())
+        window.location.href = '/login'
     };
 
     const handleSubmit = async (event) => {
@@ -87,10 +86,10 @@ function Login() {
             const userID = data2.id
 
             // dispatch action เพื่อบันทึก userID ลงใน state
-            dispatch(setUserid({ userId: userID }));
+            dispatch(setUserid({ userId: userID ,token: tokenS}));
             // Redirect to the home page after successful registration
             setIsLoggedIn(true) // เปลี่ยนสถานะการ login เป็น true
-            navigate("/");
+            window.location.href = '/' //ให้ refesh ทั้งหน้าเพื่อให้ profile
 
         } catch (error) {
             // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
@@ -115,33 +114,10 @@ function Login() {
     return (
 
         <div className='flex justify-center'>
-            <div className='absolute'>
-                <Layout />
-            </div>
-            {/*กรอบงานทั้งหมด*/}
-            <div className='absolute w-full md:h-[1820px] h-[2900px]'>
-                <div className='flex flex-col items-center'>
-
-                    {/**กรอบ home/login */}
-                    <div className='flex flex-row'>
-
-                        {/**กรอบ Home */}
-                        <div className='md:mt-[300px] mt-[400px] self-start w-[200px] h-[30px]'>
-                            <Link to="/">
-                                <button className='w-[250px] h-[70px] bg-[#2267D1] shadow-md text-white text-[30px] hover:translate-x-[20px] rounded-[100%]'>HOME</button>
-                            </Link>
-                        </div>
-
-                        {/*กรอบ login*/}
-                        <Link to="/login">
-                            <button className='md:mt-[310px] mt-[410px] ml-[100px] w-[100px] h-[60px] border-gray border-[1px] bg-white shadow-[4px_4px_rgba(0,0,0,0.6)] hover:duration-100 hover:animate-bounce rounded-[100%]'>เข้าสู่ระบบ</button>
-                        </Link>
-
-                    </div>
 
 
                     {/**กรอบกล่องเพิ่มชื่อเพลง */}
-                    <div className='mt-[60px] border-[2px] md:w-[700px] w-[400px] h-[500px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
+                    <div className='mt-[500px] mb-[100px] border-[2px] md:w-[700px] w-[400px] h-[500px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
 
                         {/*<div className='mt-[30px] text-[20px] text-[white]'>กรุณาเข้าสู่ระบบ</div>*/}
 
@@ -201,11 +177,6 @@ function Login() {
 
                     </div>
 
-
-
-
-                </div>
-            </div >
         </div>
     );
 }

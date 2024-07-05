@@ -1,82 +1,97 @@
-import React, { useState, useEffect } from 'react';
-import CountdownTimer from 'C:/Users/ASUS/mochi-frontend/src/time/CountdownTimer';
-
+import React, { useEffect, useState } from 'react';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
-import { DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import dayjs from 'dayjs';
-//ติดตั้ง npm install @mui/x-date-pickers @mui/x-date-pickers-pro
-
-import { useSelector } from 'react-redux'
-import axios from 'axios'; //เรียกใช้ API
+import axios from 'axios';
 
 function Count() {
 
-  //เรียกใช้ redux เรียก userid มา
-  const user = useSelector((state) => state.user) //สำหรับเรียกใช้ค่า
-  //ตัวแปรรับ userId มาจาก redux
-  const [checkAddmin, setAddmin] = useState(user.userId);
+  const [fixtime, setFixtime] = useState([{ selectedDates: [dayjs(), dayjs()], code: '' }]); // Initialize with default dates and empty code for each calendar
+  const [error, setError] = useState('');
+  const [noTi, setNoti] = useState('');
 
-
-  const [selectedDates, setSelectedDates] = useState([null, null]); // เก็บวันที่เริ่มต้นและสิ้นสุดที่เลือกไว้
-  const [timeSec, setTimeSec] = useState(null); // เก็บวันที่เริ่มต้นและสิ้นสุดที่เลือกไว้
-  const [showSeconds, setShowSeconds] = useState(false); // สถานะที่ใช้ในการแสดงจำนวนวินาที
-
-  const [startTime, setStartTime] = useState(null); // วันที่ start
-  const [endTime, setEndTime] = useState(null); // วันที่ end
-
-
-  const handleDateChange = (newDates) => {
-    setSelectedDates(newDates);
-    setShowSeconds(false); // เมื่อเลือกวันใหม่เราจะซ่อนการแสดงจำนวนวินาที
+  const handleDateChange = (newDates, fixtimeIndex) => {
+    setFixtime(prevFixtime => {
+      const updatedFixtime = [...prevFixtime];
+      updatedFixtime[fixtimeIndex].selectedDates = newDates;
+      return updatedFixtime;
+    });
   };
 
-  const handleShowSeconds = async (event) => {
-    setShowSeconds(true); // เมื่อคลิกปุ่มเราจะแสดงจำนวนวินาที
+  const handleChangeCode = (e, fixtimeIndex) => {
+    const { value } = e.target;
+    setFixtime(prevFixtime => {
+      const updatedFixtime = [...prevFixtime];
+      updatedFixtime[fixtimeIndex].code = value;
+      return updatedFixtime;
+    });
+  };
 
+  const submitClick = async (event) => {
     event.preventDefault();
     try {
-      //1.API classvote
-      const initialSeconds = Math.abs(selectedDates[1] - selectedDates[0]) / 1000; //ช่วงเวลาโหวต(วิ)
-      const startTime = Math.abs(selectedDates[0]) / 1000; //เวลาเริ่ม(วิ)
-      const endTime = Math.abs(selectedDates[1]) / 1000; //เวลาสิ้นสุด(วิ)
-      console.log('selectedDates[1]', Math.abs(selectedDates[1]) / 1000)
-      console.log('selectedDates[0]', Math.abs(selectedDates[0]) / 1000)
-      const response1 = await axios.post('http://localhost:5000/auth/keeptime', {
-        initialSeconds, startTime, endTime
-      }, {
+      const fixtimeData = fixtime.map(item => ({
+        initialSeconds: Math.abs(item.selectedDates[1] - item.selectedDates[0]) / 1000,
+        startTime: Math.abs(item.selectedDates[0]) / 1000,
+        endTime: Math.abs(item.selectedDates[1]) / 1000,
+        branchtime: item.code // Sending code along with time data
+      }));
+
+      console.log('fixtimeData', fixtimeData)
+      if (fixtimeData != 0) {
+        const response = await axios.post('http://localhost:5000/auth/keeptime', fixtimeData);
+
+        const updatedFixtime = response.data.map(data => ({
+          selectedDates: [dayjs(data.startTime * 1000), dayjs(data.endTime * 1000)],
+          code: data.code // Updating code received from server
+        }));
+
+        setFixtime(updatedFixtime);
+        setNoti('Save Due Date Time Successful')
+        setError('');
+      }
+    } catch (error) {
+      console.error('Error while fetching data:', error);
+      setError('Error while fetching data. Please clear data and try again.');
+    }
+  };
+
+  const addtimeClick = () => {
+    const updatedFixtime = [...fixtime];
+    updatedFixtime.push({ selectedDates: [dayjs(), dayjs()], code: '' }); // Add an empty fixtime object with empty code
+    setFixtime(updatedFixtime);
+  };
+
+  const deleteTimeClick = (fixtimeIndex) => {
+    const updatedFixtime = [...fixtime];
+    updatedFixtime.splice(fixtimeIndex, 1); // Remove fixtime at fixtimeIndex
+    setFixtime(updatedFixtime);
+  };
+
+  const clearClick = async () => {
+    try {
+      await axios.delete('http://localhost:5000/auth/keeptime', {
         headers: {
           "Access-Control-Allow-Origin": "*",
           "Accept": "application/json",
           "Content-Type": "application/json",
         }
       });
-
-      console.log('initialSeconds OK', response1.data);
-      setTimeSec(response1.data.initialSeconds)
-      setStartTime(response1.data.startTime)
-      setEndTime((response1.data.endTime) * 1000)
-
-      // Update selectedDates with start and end times as Dayjs objects
-      setSelectedDates([dayjs(response1.data.startTime * 1000), dayjs(response1.data.endTime * 1000)]);
-
-
+      setFixtime([{ selectedDates: [dayjs(), dayjs()], code: '' }]); // Reset fixtime to default empty values
+      setError(''); // Clear any existing error message
+      setNoti('')
     } catch (error) {
-      // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
-      console.error('initialSeconds error:', error);
-
+      console.error('Error deleting data:', error);
+      setError('Error deleting data. Please try again.');
     }
   };
 
   useEffect(() => {
 
     const fetchgettime = async () => {
-
       try {
-
-        const getkeeptime = await axios.get('http://localhost:5000/getkeeptime', {
+        const getkeeptime = await axios.get('http://localhost:5000/auth/keeptime', {
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Accept": "application/json",
@@ -84,79 +99,85 @@ function Count() {
           }
         });
 
-        // Handle successful response
-        console.log('Time get successfully:', getkeeptime.data.latestkeeptimeId);
-        setTimeSec(getkeeptime.data.latestkeeptimeId)
-        setStartTime(getkeeptime.data.latestkeeptimeStart)
-        setEndTime((getkeeptime.data.latestkeeptimeEnd) * 1000)
+        console.log('Time get successfully:', getkeeptime.data);
 
-        // Update selectedDates with start and end times as Dayjs objects
-        setSelectedDates([dayjs(getkeeptime.data.latestkeeptimeStart * 1000), dayjs(getkeeptime.data.latestkeeptimeEnd * 1000)]);
+        if (getkeeptime.data = getkeeptime.data) {
+          setNoti('Save Due Date Time Successful, Clear for Reset New Due Date')
+        }
 
       } catch (error) {
-        // Handle errors
         console.error('Error get time:', error);
       }
     };
 
     fetchgettime();
-
   }, []);
 
-  const calculateSeconds = () => {
-
-    const currentDate = new Date();
-    const currentTimestampInMilliseconds = currentDate.getTime();
-    const currentTimestampInSeconds = Math.round(currentTimestampInMilliseconds / 1000) //เวลาปัจจุบัน
-
-    if (currentTimestampInSeconds < (startTime)) { return 0 } //ถ้าวัน start ยังไม่ถึง ให้เป็น 0
-    if (currentTimestampInSeconds > (endTime)) { return 0 } //ถ้าเลยเวลา end ไปแล้วให้เป็น 0
-
-    if (timeSec !== null && startTime !== null) {
-      const elapsedSeconds = Math.round((new Date() / 1000) - startTime);
-      return timeSec - elapsedSeconds;
-    }
-
-    if (timeSec != timeSec) {
-      if (selectedDates[0] && selectedDates[1] && selectedDates[0] <= new Date()) {
-        console.log('selectedDates[0]', selectedDates[0])
-        console.log('selectedDates[1]', selectedDates[1])
-        return Math.abs(selectedDates[1] - selectedDates[0]) / 1000;
-      }
-    }
-    return 0;
-
-  };
-
   return (
-    <div className='flex flex-col items-center'>
-      <div className='flex flex-row items-center'>
+    <div className='flex flex-col items-center justify-center my-[30px]'>
+      <div className='my-[10px]'>ส่วนที่ 2 กำหนดช่วงเวลาโหวต</div>
 
-        {(checkAddmin == 1) && <div className='m-[20px] w-[300px] '>
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateRangePicker']}>
-              <DemoItem component="DateRangePicker">
-                <DateRangePicker
-                  calendars={2}
-                  value={selectedDates}
-                  onChange={handleDateChange}
-                />
-              </DemoItem>
-            </DemoContainer>
-          </LocalizationProvider>
-        </div>}
-        {(checkAddmin == 1) && <div>
-          <button onClick={handleShowSeconds} className='underline decoration-1 hover:text-green-500'>Change Time</button>
-        </div>}
+      <div className='flex md:flex-row md:flex-wrap flex-col'>
+        {!noTi ? (fixtime.map((fixtime, fixtimeIndex) => (
+          <div key={fixtimeIndex}>
+            <div className='flex flex-col m-[20px]'>
+              <input
+                type='text'
+                className='w-[100px] px-[5px] text-[14px] bg-green-100 focus:outline-none focus:ring-sky-500 focus:ring-1'
+                placeholder='รหัสสาขา'
+                value={fixtime.code}
+                onChange={(e) => handleChangeCode(e, fixtimeIndex)}
+              />
+
+              <div className='flex flex-row items-center justify-center mt-[10px] bg-white bg-opacity-[35%] rounded-[10px]'>
+                <div className='flex flex-col m-[20px] w-[200px] h-[65px]'>
+                  <div className='text-[9px] mb-[10px] italic'>กำหนดช่วงเวลาโหวต</div>
+                  <LocalizationProvider dateAdapter={AdapterDayjs}>
+                    <div style={{ maxWidth: '220px', fontSize: '9px' }}>
+                      <DateRangePicker
+                        calendars={2}
+                        value={fixtime.selectedDates}
+                        onChange={(newDates) => handleDateChange(newDates, fixtimeIndex)}
+                        sx={{
+                          '& .MuiInputBase-input': { fontSize: '8px' },
+                          '& .MuiTypography-root': { fontSize: '8px' }
+                        }}
+                      />
+                    </div>
+                  </LocalizationProvider>
+                </div>
+
+              </div>
+
+              <div className='flex flex-row justify-end mt-[5px] mb-[20px]'>
+                <button
+                  onClick={() => addtimeClick()}
+                  className='mr-[5px] w-[50px] h-[23px] rounded-[18px] bg-green-500 hover:bg-green-600 flex justify-center items-center text-white text-[10px]'>Add</button>
+                <button
+                  onClick={() => deleteTimeClick(fixtimeIndex)}
+                  className='w-[50px] h-[23px] rounded-[18px] bg-red-500 hover:bg-red-600 flex justify-center items-center text-white text-[10px]'>Delete</button>
+              </div>
+
+            </div>
+          </div>
+
+        ))) : <div className='text-green-900 text-[24px]'>{noTi}</div>}
+
+
       </div>
-      <div>
-        {(timeSec || showSeconds) && <CountdownTimer initialSeconds={calculateSeconds()} />}
+
+      {error && <div>{error}</div>}
+      <div className='flex flex-row '>
+        <button
+          onClick={clearClick}
+          className='m-[10px] w-[60px] h-[33px] rounded-[18px] bg-sky-200 hover:bg-red-500 flex justify-center items-center text-black hover:text-white text-[12px]'>Clear</button>
+
+        {!noTi ? (<button
+          onClick={submitClick}
+          className='m-[10px] w-[60px] h-[33px] rounded-[18px] bg-green-600 hover:bg-green-900 flex justify-center items-center text-white text-[12px]'>Set Time</button>
+        ) : ''}
       </div>
-      <div>
-        {(timeSec || showSeconds) && selectedDates[1] && (
-          <div className='text-[18px]'>ระยะเวลาในการโหวต: {selectedDates[1].toString()}</div>
-        )}
-      </div>
+
     </div>
   );
 }

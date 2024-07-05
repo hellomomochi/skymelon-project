@@ -151,7 +151,7 @@ function Fprofile() {
           /**action */ enter="transition-transform duration-[1000ms] ease-out"
           /**ก่อน */ enterFrom="-translate-y-[60px]"
           /**หลัง */ enterTo="translate-y-0"
-                            className="darf11" //กำหนด contrainer มาครอบ Transition
+                            className="darf11" //กำหนด className contrainer มาครอบ Transition
                         >
                             <div className='darf11'>
                                 <div className=' text-red-200 text-[44px]'>It's</div>

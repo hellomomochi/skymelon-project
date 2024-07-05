@@ -6,14 +6,9 @@ import { BrowserRouter, Routes, Route } from "react-router-dom"
 import Layout from './PLayout'
 import Profile from './Profile'
 import First from './First'
-import Second from './Second'
-import Tird from './Tird'
-import Fourth from './Fourth'
-import Votekm1 from './Votekm1'
-import Votekm2 from './Votekm2'
-import Votekm3 from './Votekm3'
-import Votekm4 from './Votekm4'
+import Vote from './Vote'
 import Login from './Login'
+import Logintoken from './Logintoken'
 import Register from './Register'
 import Result from './Result';
 import ForgotPassword from './components/ForgotPassword';
@@ -22,6 +17,7 @@ import Count from './time/Count';
 import CountdownTimer from './time/CountdownTimer';
 import Googlelogin from './components/Googlelogin'
 import Googlelogout from './components/Googlelogout'
+import Setting from './Setting'
 
 import { Provider } from 'react-redux';
 import { store, persistor } from './store';
@@ -34,25 +30,22 @@ root.render(
       <Provider store={store}>
         <PersistGate loading={null} persistor={persistor}>
           <Routes>
-            <Route path="" element={<Home />} />
-            <Route path="" element={<Layout />} />
-            <Route path="km1" element={<First />} />
-            <Route path="km2" element={<Second />} />
-            <Route path="km3" element={<Tird />} />
-            <Route path="km4" element={<Fourth />} />
-            <Route path="votekm1" element={<Votekm1 />} />
-            <Route path="votekm2" element={<Votekm2 />} />
-            <Route path="votekm3" element={<Votekm3 />} />
-            <Route path="votekm4" element={<Votekm4 />} />
-            <Route path="login" element={<Login />} />
-            <Route path="register" element={<Register />} />
-            <Route path="result" element={<Result />} />
-            <Route path="ForgotPassword" element={<ForgotPassword />} />
-            <Route path="/reset/:token" element={<ResetPassword />} />
-            <Route path="" element={<Count />} />
-            <Route path="" element={<CountdownTimer />} />
-            <Route path="login" element={<Googlelogin />} />
-            <Route path="login" element={<Googlelogout />} />
+            <Route path="" element={<Layout />} >
+              <Route path="" element={<Home />} />
+              <Route path=":km" element={<First />} />{/**ปัก */}
+              <Route path="vote" element={<Vote />} />
+              <Route path="/login" element={<Login />} /> {/* สำหรับสมัครสมาชิกแล้ว login */}
+              <Route path="/verify/:token" element={<Logintoken />} /> {/* สำหรับยืนยันตัวตนครั้งแรก */}
+              <Route path="register" element={<Register />} />
+              <Route path="result" element={<Result />} />
+              <Route path="ForgotPassword" element={<ForgotPassword />} />
+              <Route path="/reset/:token" element={<ResetPassword />} />
+              <Route path="" element={<Count />} />
+              <Route path="" element={<CountdownTimer />} />
+              <Route path="login" element={<Googlelogin />} />
+              <Route path="login" element={<Googlelogout />} />
+              <Route path="setting" element={<Setting />} />
+            </Route>
             <Route path="profile" element={<Profile />} />
           </Routes>
         </PersistGate>

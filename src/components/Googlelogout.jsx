@@ -7,13 +7,10 @@ import { GoogleLogout } from 'react-google-login';
 import { clearUserid } from "C:/Users/ASUS/mochi-frontend/src/slice/user";
 import { useDispatch, useSelector } from 'react-redux'
 //Selector : อ่านค่า //Dispatch: เขียนค่า
-import { useNavigate } from "react-router-dom";
 
 const clientId = '989711806113-lh64qbra7rv02ut7f6hh8r3dm2f1u60h.apps.googleusercontent.com'; // แทนที่ด้วย Client ID ที่ได้จาก Google Developer Console
 
 function Googlelogout() {
-
-    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
 
     //สร้างก่อน useSate
     const dispatch = useDispatch()
@@ -26,7 +23,7 @@ function Googlelogout() {
         // ทำการออกจากระบบ โดยรีเซ็ตค่าการเข้าสู่ระบบเป็น false
         setIsLoggedIn(false);
         dispatch(clearUserid())
-        navigate("/");
+        window.location.href = '/' //ให้ refesh ทั้งหน้าเพื่อให้ profile
     }
 
     return (

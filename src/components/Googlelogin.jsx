@@ -11,8 +11,6 @@ import { useDispatch, useSelector } from 'react-redux'
 const clientId = '989711806113-lh64qbra7rv02ut7f6hh8r3dm2f1u60h.apps.googleusercontent.com'; // แทนที่ด้วย Client ID ที่ได้จาก Google Developer Console
 
 function Googlelogin() {
-    
-    const navigate = useNavigate(); // Use useNavigate for programmatic navigation
 
     //สร้างก่อน useSate
     const dispatch = useDispatch()
@@ -29,19 +27,26 @@ function Googlelogin() {
         const email = response.profileObj.email
         const password = response.profileObj.googleId
         try {
-            const responseGoogle = await axios.post('http://localhost:5000/auth/register', { username,email, password }, {
+            const responseGoogle = await axios.post('http://localhost:5000/auth/register', { username, email, password }, {
                 headers: {
                     "Access-Control-Allow-Origin": "*",
                     "Accept": "application/json",
                     "Content-Type": "application/json",
                 }
             });
-            console.log('googleRegis successful', responseGoogle);
+            console.log('googleRegis successful', responseGoogle.data.emailVerificationToken);
+
+            const GoogleToken = responseGoogle.data.emailVerificationToken
+
+            const response = await axios.post(`http://localhost:5000/auth/verify/${GoogleToken}`, { GoogleToken });
+            console.error('goole account verification successful', response);
 
         } catch (error) {
             console.error(error);
             console.log('googleRegis error');
         }
+
+
 
         try {
             const responseGoogleLogin = await axios.post('http://localhost:5000/auth/login', {
@@ -81,10 +86,10 @@ function Googlelogin() {
             const userID = data2.id
 
             // dispatch action เพื่อบันทึก userID ลงใน state
-            dispatch(setUserid({ userId: userID }));
+            dispatch(setUserid({ userId: userID ,token: tokenG}));
             // Redirect to the home page after successful registration
             setIsLoggedIn(true) // เปลี่ยนสถานะการ login เป็น true
-            navigate("/");
+            window.location.href = '/' //ให้ refesh ทั้งหน้าเพื่อให้ profile
 
         } catch (error) {
             // แสดงข้อความแจ้งเตือนเมื่อเข้าสู่ระบบไม่สำเร็จ
@@ -102,8 +107,7 @@ function Googlelogin() {
 
         <div>
             <div className='flex flex-col items-center '>
-                <div className=' text-white'> Or </div>
-                <div className='mb-[10px] text-white'>Login with Google</div>
+                <div className='mb-[10px] text-white text-[12px]'> Or </div>
                 <GoogleLogin
                     clientId={clientId}
                     buttonText="Login with Google"
