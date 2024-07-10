@@ -24,7 +24,7 @@ function Fprofile() {
         //ตั้งต้นให้ Darf2 จับการเคลื่อนที่ของแกน Y
         const handleScrollslideWho = () => {
             const scrollTop = window.scrollY;
-            if (scrollTop >= 500) { //ขยับแกน Y มากกว่า 500 จากบนสุดเคลื่อนให้เป็น true
+            if (scrollTop >= 400) { //ขยับแกน Y มากกว่า 500 จากบนสุดเคลื่อนให้เป็น true
                 setDarf2(true);
             } else {
                 setDarf2(false); //อื่นๆ อยู่ที่ตำแหน่งเดิม
@@ -36,7 +36,7 @@ function Fprofile() {
         //ตั้งต้นให้ Darf3 จับการเคลื่อนที่ของแกน Y
         const handleScrollExperience = () => {
             const scrollTop = window.scrollY;
-            if (scrollTop >= 800) { //ขยับแกน Y มากกว่า 800 จากบนสุดเคลื่อนให้เป็น true
+            if (scrollTop >= 700) { //ขยับแกน Y มากกว่า 800 จากบนสุดเคลื่อนให้เป็น true
                 setDarf3(true);
             } else {
                 setDarf3(false); //อื่นๆ อยู่ที่ตำแหน่งเดิม
@@ -59,6 +59,15 @@ function Fprofile() {
 
     }, [])
 
+
+    {/**คลิกเลื่อนหาหน้าที่ต้องการ */ }
+    {/**Sirapassorn */ }
+    const handleScrollToSirapassorn = () => {
+        const element = document.getElementById('sirapassorn');
+        if (element) {
+            element.scrollIntoView({ behavior: 'smooth' });
+        }
+    }
 
     {/**คลิกเลื่อนหาหน้าที่ต้องการ */ }
     {/**WhoIsMe */ }
@@ -119,32 +128,36 @@ function Fprofile() {
         <div className='w-full flex flex-col'>
 
             {/**แถว1 */}
-            <div className='h-[20px] bg-green-400'></div>
-            <div className='h-[20px] bg-red-400'></div>
-            <div className='w-[1200px] self-center'>
-                <div className='flex flex-row items-end justify-end h-[60px] '>
-                    <div className='w-[300px] flex justify-center text-[32px] transition duration-0 md:duration-150 text-[#C47CFF] font-Comfortaa'>Sirapassorn</div>
+            <header className='fixed h-[100px] w-full z-[99]'>
+                <div className=' h-[20px] bg-green-400'></div>
+                <div className='h-[20px] bg-red-400'></div>
+                <div className='w-full self-center'>
+                    <div className='flex flex-row items-end justify-center h-[60px] bg-white'>
+                        <button className='w-[300px] flex justify-center text-[32px] transition duration-0 md:duration-150 text-[#C47CFF] font-Comfortaa'
+                            onClick={handleScrollToSirapassorn}>Sirapassorn</button>
 
-                    {/**ปุ่ม */}
-                    <div className='flex justify-end w-[800px] flex-row mx-[20px]'>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToWhoIsMe}>Who is me ?</button>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToExperience}>Experience</button>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToDEV}>Beginning of DEV</button>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToSkill}>Skill</button>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToProject}>Project</button>
-                        <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToContact}>Contact</button>
+                        {/**Draft 0 */}
+                        {/**ปุ่ม */}
+                        <div className='flex justify-end w-[800px] flex-row mx-[20px]'>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToWhoIsMe}>Who is me ?</button>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToExperience}>Experience</button>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToDEV}>Beginning of DEV</button>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToSkill}>Skill</button>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToProject}>Project</button>
+                            <button className='mx-[10px] text-[20px] hover:text-[#C47CFF] font-Comfortaa' onClick={handleScrollToContact}>Contact</button>
+                        </div>
                     </div>
                 </div>
-            </div>
+            </header>
 
-
+            <div id='sirapassorn' ></div>
             {/**ดราฟ1 */}
-            <div className='h-[460px] flex flex-row bg-red-200 justify-center items-center'>
+            <div className='h-[460px] mt-[100px] flex flex-row bg-red-200 justify-center items-center'>
 
 
                 <div className='h-[440px] flex flex-row justify-center items-center bg-slate-400'>
 
-                    <div className='flex flex-col items-center justify-center w-[300px] h-[400px] text-blue-200 text-[36px] bg-slate-500'>
+                    <div className='flex flex-col items-center justify-center w-full h-[400px] text-blue-200 text-[36px] bg-slate-500'>
                         {/**เลื่อน darf11 */}
                         <Transition
                             show={darf1}
@@ -203,7 +216,7 @@ function Fprofile() {
                                 className='darf14'>
                                 <div className='darf14'>
                                     <div className='mx-[10px] mt-[20px] text-slate-500 text-[30px] w-[500px] h-[90px] bg-yellow-200 text-center font-Prompt'>“Time is limited, So don't waste it living an unhappy life.”</div>
-                                    <div className='mx-[10px] text-red-500 text-[24px] w-[500px] h-[80px] bg-yellow-200 text-center font-Prompt'>“เวลามีจำกัด เพราะฉะนั้นอย่าเสียเวลาไปกับการใช้ชีวิตที่ไม่มีความสุข”</div>
+                                    <div id="who-is-me-section" className='mx-[10px] text-red-500 text-[24px] w-[500px] h-[80px] bg-yellow-200 text-center font-Prompt'>“เวลามีจำกัด เพราะฉะนั้นอย่าเสียเวลาไปกับการใช้ชีวิตที่ไม่มีความสุข”</div>
                                 </div>
                             </Transition>
                         </div>
@@ -213,7 +226,7 @@ function Fprofile() {
             </div>
 
             {/**ดราฟ2 */}
-            <div id="who-is-me-section" className='flex  items-center h-[100px] bg-green-200 justify-center '>
+            <div className='flex  items-center h-[100px] bg-green-200 justify-center '>
 
                 {/**เลื่อน darf21 */}
                 <Transition
@@ -279,7 +292,7 @@ function Fprofile() {
                         className='darf25'>
                         <div className='darf25'>
                             <div className='mx-[10px] mt-[30px] text-[28px] w-[550px] h-[50px] text-center font-Prompt'>This is the beginning of adulthood !</div>
-                            <div className='mx-[10px] text-[22px] w-[550px] h-[40px] text-center font-Prompt'>นี่คือจุดเริ่มต้นการเป็นผู้ใหญ่ !</div>
+                            <div id="Experience-section" className='mx-[10px] text-[22px] w-[550px] h-[40px] text-center font-Prompt'>นี่คือจุดเริ่มต้นการเป็นผู้ใหญ่ !</div>
                         </div>
                     </Transition>
                 </div>
@@ -287,7 +300,7 @@ function Fprofile() {
 
             {/**ดราฟ3 */}
             <div className=' bg-yellow-200 flex flex-col items-center'>
-                <div id="Experience-section" className='flex  items-end text-[46px] h-[80px] bg-yellow-200 justify-center font-Prompt'>Experience</div>
+                <div className='flex  items-end text-[46px] h-[80px] bg-yellow-200 justify-center font-Prompt'>Experience</div>
 
                 {/**เลื่อน darf31 */}
                 <div className='h-[500px] bg-yellow-200 '>
@@ -298,7 +311,7 @@ function Fprofile() {
                         className='flex flex-row justufy-center items-center darf31'>
                         {/**Tab1 */}
                         <div className='darf31'>
-                            <div className='flex flex-col items-center m-[20px] bg-white bg-opacity-[45%] w-[400px] h-[430px] rounded-[15px]'>
+                            <div className='flex flex-col items-center my-[20px] mx-[10px] bg-white bg-opacity-[45%] w-[380px] h-[430px] rounded-[15px]'>
                                 {/**รูป1 */}
                                 <div className='m-[30px] w-[300px] h-[180px]'>
                                     <img src='hand-drawn-food-manufacturing-illustration_23-2149519154.jpg'></img>
@@ -307,14 +320,14 @@ function Fprofile() {
                             </div>
 
                             {/**Tab2 */}
-                            <div className='flex flex-col m-[20px] bg-white bg-opacity-[45%] w-[400px] h-[430px] rounded-[15px]'>
+                            <div className='flex flex-col my-[20px] mx-[10px] bg-white bg-opacity-[45%] w-[380px] h-[430px] rounded-[15px]'>
                                 <div className='m-[30px] w-[300px] h-[180px]'>
                                     <img src='business-woman-business-man-with-clock-coins-with-suitcase_24640-45233.jpg'></img>
                                 </div>
                                 <div className='text-[18px] mx-[30px] text-justify font-Prompt'>Increase profits for the company by increasing production capacity with the same manpower or the same production capacity but using fewer operators.</div>
                             </div>
                             {/**Tab3 */}
-                            <div className='flex flex-col m-[20px] bg-white bg-opacity-[45%] w-[400px] h-[430px] rounded-[15px]'>
+                            <div className='flex flex-col my-[20px] mx-[10px] bg-white bg-opacity-[45%] w-[380px] h-[430px] rounded-[15px]'>
                                 <div className=' m-[30px] w-[300px] h-[180px]'>
                                     <img src='live-collaboration-concept-illustration_114360-2514.jpg'></img>
                                 </div>
@@ -322,12 +335,13 @@ function Fprofile() {
                             </div>
                         </div>
                     </Transition>
+                    <div id="DEV-section"></div>
                 </div>
             </div>
 
             {/**ดราฟ4 */}
             <div className='flex flex-row justify-center bg-purple-200 '>
-                <div id="DEV-section" className='flex flex-row h-[570px]'>
+                <div className='flex flex-row h-[570px]'>
                     {/**tab start DEV */}
                     <div className='flex flex-col items-center justify-center w-[700px] h-[570px] bg-slate-600'>
                         <div className=' text-purple-200 text-[32px] font-Prompt'>
@@ -350,7 +364,7 @@ function Fprofile() {
                     </div>
 
                     {/**tab รูป */}
-                    <div className='flex justify-center items-center w-[600px] h-[570px] bg-purple-200 '>
+                    <div className='flex justify-center items-center w-[500px] h-[570px] bg-purple-200 '>
                         {/**รูป */}
                         <div className='w-[380px] h-[480px]'>
                             <img src='440024444_3260170910952328_9170959272674622266_n2.png'></img>
@@ -358,10 +372,10 @@ function Fprofile() {
                     </div>
                 </div>
             </div>
-
+            <div id="Skill-section"></div>
             {/**ดราฟ5 */}
             <div className='flex flex-col h-[570px] bg-red-400'>
-                <div id="Skill-section" className='flex  items-end text-[46px] h-[80px] justify-center text-black font-Prompt'>SKILL</div>
+                <div className='flex  items-end text-[46px] h-[80px] justify-center text-black font-Prompt'>SKILL</div>
                 <div className='mt-[30px] flex flex-row justify-center h-[460px]'>
                     {/**tab1 */}
                     <div className='flex flex-col items-center text-[32px] w-[340px]'>

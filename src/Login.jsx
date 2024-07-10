@@ -117,7 +117,7 @@ function Login() {
 
 
                     {/**กรอบกล่องเพิ่มชื่อเพลง */}
-                    <div className='mt-[500px] mb-[100px] border-[2px] md:w-[700px] w-[400px] h-[500px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
+                    <div className=' mb-[100px] mt-[50px] border-[2px] md:w-[700px] w-[400px] h-[500px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
 
                         {/*<div className='mt-[30px] text-[20px] text-[white]'>กรุณาเข้าสู่ระบบ</div>*/}
 

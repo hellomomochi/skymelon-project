@@ -15,8 +15,8 @@ function Setting() {
 
   return (
     <div className='w-full flex justify-center '>
-      <div className='flex flex-col items-center '>
-        {checkAdmin === 1 && (<div className='md:w-[1198px] flex flex-col items-center justify-center md:mt-[400px] mt-[500px]'>
+      <div className='flex flex-col items-center mt-[50px]'>
+        {checkAdmin === 1 && (<div className='md:w-[1198px] flex flex-col items-center justify-center '>
           
           <div className='border-[2px] md:w-[1200px] w-[500px] py-[20px]'><Inputroom /></div>
           <div className='my-[20px] border-[2px] md:w-[1200px] w-[500px]'><OtherCount /></div>

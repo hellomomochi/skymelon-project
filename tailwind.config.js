@@ -7,6 +7,7 @@ module.exports = {
       Mitr: ["Mitr", 'sans-serif'],//ตามชื่อในกูเกิล (ตัวสีฟ้า)
       Prompt: ["Prompt", 'sans-serif'],
       Comfortaa: ["Comfortaa", 'sans-serif'],
+      Sarabunthin: ["sarabun-thin", 'sans-serif'],
     },
   },
   plugins: [],

@@ -71,9 +71,9 @@ function Result() {
     const getRandomColor = () => `#${Math.floor(Math.random() * 16777215).toString(16)}`;
 
     return (
-        <div className='w-full mt-[450px] flex flex-col justify-center'>
+        <div className='w-full flex flex-col justify-center'>
             <div className='flex flex-col items-center'>
-                <div className='my-[10px]'>
+                <div className='my-[50px]'>
                     <div className='flex flex-row flex-wrap'>
                         {sumVoteCandidate.map((group, groupIndex) => (
                             <BarChart
@@ -121,7 +121,7 @@ function Result() {
 
                 <div className='mb-[100px] w-[210px] h-[70px] flex justify-center items-center'>
                     <Link to='/'>
-                        <button className='mt-[80px] w-[200px] h-[60px] hover:w-[210px] hover:h-[70px] hover:text-black bg-[#7D2D2A] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[20px] hover:text-[25px] font-Mitr'>VOTE</button>
+                        <button className=' w-[200px] h-[60px] hover:w-[210px] hover:h-[70px] hover:text-black bg-[#7D2D2A] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[20px] hover:text-[25px] font-Mitr'>VOTE</button>
                     </Link>
                 </div>
             </div>

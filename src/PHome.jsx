@@ -33,7 +33,7 @@ function PHome() {
   useEffect(() => {
     const getRoom = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/auth/testhm', {
+        const response = await axios.get('http://localhost:5000/auth/homeroom', {
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Accept": "application/json",
@@ -43,8 +43,8 @@ function PHome() {
 
         console.log('Fetch data response:', response.data);
 
-        if (response.data && response.data.testhmData) {
-          let formattedData = response.data.testhmData.map(item => ({
+        if (response.data && response.data.homeroomData) {
+          let formattedData = response.data.homeroomData.map(item => ({
             id: item.id,
             code: item.code,
             recode: Number(item.code.slice(2)),
@@ -76,7 +76,7 @@ function PHome() {
   return (
     <div className='w-full flex justify-center '>
       <div className='flex flex-col items-center '>
-        <div className='md:w-[1198px] w-[600px] flex md:flex-row flex-col flex-wrap justify-center md:mt-[400px] mt-[500px] mb-[50px]'>
+        <div className='w-[1198px] flex md:flex-row flex-col flex-wrap justify-center mb-[50px]'>
 
           {dataRoom.map((item, index) => (
             <div className='flex md:flex-row md:justify-center flex-col items-center m-[30px]' key={item.id}>
@@ -110,13 +110,16 @@ function PHome() {
           ))}
         </div>
 
-        <div className='w-[210px] h-[70px] flex justify-center items-center'>
+        <div className='mb-[30px]  w-[230px] h-[80px] flex justify-center items-center '>
           <Link to='/result'>
-            <button className='mb-[50px] w-[220px] h-[80px] hover:w-[230px] hover:h-[90px] hover:text-black bg-[#FA0487] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[30px] hover:text-[35px] font-Mitr'>ดูผลคะแนน</button>
+            <button className=' w-[220px] h-[80px] hover:w-[230px] hover:h-[90px] hover:text-black bg-[#FA0487] border-black rounded-[50px] text-white shadow-[3px_4px_rgba(0,0,0,0.5)] drop-shadow-[3px_4px_rgba(0,0,0,0.5)] text-[30px] hover:text-[35px] font-Mitr'>ดูผลคะแนน</button>
           </Link>
         </div>
 
-        <div className='mt-[50px]'><TabEnd /></div>
+        <div className='mt-[30px] mx-[10px] text-wrap'>กติกาในการโหวต : ผู้เข้าร่วมโหวตสามารถโหวตได้ทุกสาขาซึ่งในแต่ละสาขาจะสามารถโหวตเพียง 1 คะแนนโหวต ต่อ 1 บัญชี ต่อ 1 วัน เท่านั้น
+          และสามารถโหวตได้อีกครั้งในวันถัดไป</div>
+
+        <div className='mt-[30px]'><TabEnd /></div>
       </div>
     </div>
   );

@@ -26,10 +26,10 @@ const VerifyEmail = () => {
     }, [navigate, token]);
 
     return (
-        <div className='mt-[350px] mb-[70px]'>
-            <div className='w-[1000px] h-[100px] flex flex-col justify-center items-center bg-green-400'>
+        <div className='mb-[70px] mt-[50px]'>
+            <div className='w-[1000px] h-[100px] flex flex-col justify-center items-center bg-gray-400'>
                 <h1>Email Verification</h1>
-                <p>{verificationStatus}</p>
+                <p className='text-[28px]'>{verificationStatus}</p>
             </div>
         </div>
     );

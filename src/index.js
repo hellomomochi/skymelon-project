@@ -18,6 +18,7 @@ import CountdownTimer from './time/CountdownTimer';
 import Googlelogin from './components/Googlelogin'
 import Googlelogout from './components/Googlelogout'
 import Setting from './Setting'
+import Datavote from './Datavote'
 
 import { Provider } from 'react-redux';
 import { store, persistor } from './store';
@@ -45,6 +46,7 @@ root.render(
               <Route path="login" element={<Googlelogin />} />
               <Route path="login" element={<Googlelogout />} />
               <Route path="setting" element={<Setting />} />
+              <Route path="datavote" element={<Datavote />} />
             </Route>
             <Route path="profile" element={<Profile />} />
           </Routes>

@@ -93,7 +93,7 @@ function Vote() {
         <div className='flex justify-center'>
 
             {/**กรอบส่งคะแนนโหวต */}
-            {isLoggedIn ? <div className='md:mt-[450px] mt-[550px] bg-[#ff5b56] h-[500px] md:w-[550px] w-[470] md:rounded-[30px] rounded-[20px] shadow-[4px_4px_rgba(0,0,0,0.6)] flex flex-col items-center bg-opacity-[80%]'>
+            {isLoggedIn ? <div className='bg-[#ff5b56] h-[500px] mb-[30px] mt-[50px] md:w-[550px] w-[470] md:rounded-[30px] rounded-[20px] shadow-[4px_4px_rgba(0,0,0,0.6)] flex flex-col items-center bg-opacity-[80%]'>
                 <div className='mt-[10px] md:text-[18px] text-[15px] mx-[70px] font-Mitr'>ร่วมส่งคะแนนโหวตศิลปินในสาขาที่คุณชื่นชอบ</div>
 
                 <form action='#' onSubmit={handleSubmit} className="flex flex-col">

@@ -9,15 +9,19 @@ function First() {
   const [getError, setGetError] = useState(null);
   const [dataCandidate, setDataCandidate] = useState([]);
   const [branchName, setBranchName] = useState('');
+  const [isTimeHidden, setIsTimeHidden] = useState(false);
 
   const user = useSelector((state) => state.user);
   const [isLoggedIn, setIsLoggedIn] = useState(!!user.userId);
   const navigate = useNavigate();
 
+  // State for showtime.js
+  const [timerValue, setTimerValue] = useState(null);
+
   useEffect(() => {
     const fetchCandidates = async () => {
       try {
-        const response = await axios.get('http://localhost:5000/auth/testhm', {
+        const response = await axios.get('http://localhost:5000/auth/homeroom', {
           headers: {
             "Access-Control-Allow-Origin": "*",
             "Accept": "application/json",
@@ -27,11 +31,11 @@ function First() {
 
         console.log('Fetch data response:', response.data);
 
-        if (response.data && response.data.testhmData) {
-          const matchingData = response.data.testhmData.find(item => item.code === km);
+        if (response.data && response.data.homeroomData) {
+          const matchingData = response.data.homeroomData.find(item => item.code === km);
 
           if (matchingData) {
-            const formattedData = matchingData.Testcd.map(candidate => ({
+            const formattedData = matchingData.Candidateroom.map(candidate => ({
               candidateName: candidate.candidateName,
               imageCandidate: candidate.imageCandidates ? { name: candidate.imageCandidates } : null
             }));
@@ -56,10 +60,15 @@ function First() {
     navigate('/vote', { state: { artistName: artist, branchName: branch } });
   };
 
+  const hideTimeOnClick = () => {
+    setIsTimeHidden(!isTimeHidden);
+  }
+
+  const lessthan = '<', morethan = '>'
   return (
     <div className='flex justify-center'>
-      <div className='w-full flex flex-col items-center'>
-        <div className='md:mt-[460px] mt-[520px] w-[450px] h-[200px]  flex items-center'>
+      <div className='w-full flex flex-col items-center '>
+        <div className='mt-[10px] w-[450px] h-[200px]  flex items-center'>
           <div className='justify-center w-[230px] h-[300px]'>
             <div className='w-[200px] h-[200px] flex justify-center items-center'>
               <img className='absolute z-[1] w-[200px] h-[200px]' src='sunny-and-rainy-day-16467.svg' alt='Sunny and Rainy Day' />
@@ -75,9 +84,16 @@ function First() {
           </div>
         </div>
 
-        <Showtime />
+        <div id='countTime' className={`fixed top-[10px] z-[99] left-[0px] transition-transform duration-300 ${isTimeHidden ? 'transform -translate-x-[330px]' : ''}`}>
+          <div>
+            <button className='absolute top-[190px] left-[345px] text-[32px] text-white hover:text-black' onClick={hideTimeOnClick}>
+              {isTimeHidden ? morethan : lessthan}
+            </button>
+          </div>
+          <Showtime setTimerValue={setTimerValue} />
+        </div>
 
-        <div className='m-[30px] w-[1198px] flex md:flex-row flex-col flex-wrap justify-center items-center'>
+        {(timerValue !== 0) || (user.userId == 1) ? (<div className='my-[30px] w-[1198px] flex md:flex-row flex-col flex-wrap justify-center items-center'>
           {dataCandidate.map((candidate, index) => (
             <div className='md:mx-[70px] flex flex-col' key={index}>
               <div className='mb-[40px] w-[300px] h-[400px]'>
@@ -94,6 +110,12 @@ function First() {
             </div>
           ))}
         </div>
+        ) :
+          <div className='flex flex-col items-center mb-[30px] text-[32px] font-Comfortaa'>
+            <div>The voting period has ended.</div>
+            <div>Thank you to the fans for voting.</div>
+          </div>
+          }
       </div>
     </div>
   );

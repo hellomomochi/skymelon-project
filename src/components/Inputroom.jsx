@@ -11,6 +11,7 @@ function App() {
     const [showBranch, setShowBranch] = useState([]);
     const [error, setError] = useState('');
     const [getError, setGetError] = useState('');
+    const [loading, setLoading] = useState('');
 
     const base64ToBlob = (base64) => {
         const byteString = atob(base64.split(',')[1]);
@@ -24,6 +25,7 @@ function App() {
     };
 
     const submitClick = async () => {
+        setLoading('Loading...')
         if (showBranch.length > 0) {
             setError('please clear or input data');
             return;
@@ -83,7 +85,7 @@ function App() {
 
                 console.log('showBranch.length', showBranch.length);
 
-                const response = await axios.post('http://localhost:5000/auth/testhm', formattedData, {
+                const response = await axios.post('http://localhost:5000/auth/homeroom', formattedData, {
                     headers: {
                         "Access-Control-Allow-Origin": "*",
                         "Accept": "application/json",
@@ -95,7 +97,7 @@ function App() {
                 console.log('testhmData:', response.data.createData);
 
                 try {
-                    const response = await axios.get('http://localhost:5000/auth/testhm', {
+                    const response = await axios.get('http://localhost:5000/auth/homeroom', {
                         headers: {
                             "Access-Control-Allow-Origin": "*",
                             "Accept": "application/json",
@@ -104,14 +106,15 @@ function App() {
                     });
 
                     console.log('Fetch data response:', response.data);
+                    const { homeroomData } = response.data
 
-                    if (response.data && response.data.testhmData) {
-                        const formattedData = response.data.testhmData.map(item => ({
+                    if (response.data && homeroomData) {
+                        const formattedData = homeroomData.map(item => ({
                             id: item.id,
                             code: item.code,
                             branchName: item.branch,
                             imageBranch: item.image ? { name: item.image } : null,
-                            candidates: item.Testcd.map(candidate => ({
+                            candidates: item.Candidateroom.map(candidate => ({
                                 candidateName: candidate.candidateName,
                                 imageCandidate: candidate.imageCandidates ? { name: candidate.imageCandidates } : null
                             }))
@@ -119,9 +122,11 @@ function App() {
 
                         setAllBranch(formattedData);
                         setShowBranch(formattedData);
+                        setLoading('')
                     } else {
                         setGetError('Invalid data format from API');
                     }
+
                 } catch (error) {
                     console.error('Error fetching data:', error);
                     setGetError('Error fetching data from server');
@@ -138,7 +143,7 @@ function App() {
 
     const clearClick = async () => {
         try {
-            await axios.delete('http://localhost:5000/auth/testhm', {
+            await axios.delete('http://localhost:5000/auth/homeroom', {
                 headers: {
                     "Access-Control-Allow-Origin": "*",
                     "Accept": "application/json",
@@ -208,7 +213,7 @@ function App() {
     useEffect(() => {
         const fetchData = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/auth/testhm', {
+                const response = await axios.get('http://localhost:5000/auth/homeroom', {
                     headers: {
                         "Access-Control-Allow-Origin": "*",
                         "Accept": "application/json",
@@ -217,14 +222,16 @@ function App() {
                 });
 
                 console.log('Fetch data response:', response.data);
+                const { homeroomData } = response.data
+                console.log('homeroomData:',  homeroomData );
 
-                if (response.data && response.data.testhmData) {
-                    const formattedData = response.data.testhmData.map(item => ({
+                if (response.data && homeroomData) {
+                    const formattedData = homeroomData.map(item => ({
                         id: item.id,
                         code: item.code,
                         branchName: item.branch,
                         imageBranch: item.image ? { name: item.image } : null,
-                        candidates: item.Testcd.map(candidate => ({
+                        candidates: item.Candidateroom.map(candidate => ({
                             candidateName: candidate.candidateName,
                             imageCandidate: candidate.imageCandidates ? { name: candidate.imageCandidates } : null
                         }))
@@ -328,6 +335,7 @@ function App() {
             </div>
 
             <>{error}</>
+            <div>{loading}</div>
 
             <div className='flex flex-row'>
                 {allBranch.length === 0 && <button

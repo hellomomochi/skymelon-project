@@ -22,7 +22,7 @@ const ForgotPassword = () => {
                 <div className='flex flex-col items-center '>
 
                     {/**กรอบกล่อง*/}
-                    <div className='md:mt-[450px] mb-[50px] mt-[550px] border-[2px] md:w-[700px] w-[400px] h-[300px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
+                    <div className='my-[50px] border-[2px] md:w-[700px] w-[400px] h-[300px] md:rounded-[100px] rounded-[50px] flex flex-col items-center  bg-black bg-opacity-[30%]'>
                         <div className='mt-[20px] mb-[10px] text-[24px]'>Forgot Password</div>
                         <div className="mt-[20px]">
                             <form onSubmit={handleSubmit} className='flex flex-col items-center justify-center'>

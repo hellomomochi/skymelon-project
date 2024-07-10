@@ -10,6 +10,7 @@ function Count() {
   const [fixtime, setFixtime] = useState([{ selectedDates: [dayjs(), dayjs()], code: '' }]); // Initialize with default dates and empty code for each calendar
   const [error, setError] = useState('');
   const [noTi, setNoti] = useState('');
+  const [loading, setLoading] = useState('');
 
   const handleDateChange = (newDates, fixtimeIndex) => {
     setFixtime(prevFixtime => {
@@ -30,6 +31,7 @@ function Count() {
 
   const submitClick = async (event) => {
     event.preventDefault();
+    setLoading('Loading...')
     try {
       const fixtimeData = fixtime.map(item => ({
         initialSeconds: Math.abs(item.selectedDates[1] - item.selectedDates[0]) / 1000,
@@ -50,6 +52,7 @@ function Count() {
         setFixtime(updatedFixtime);
         setNoti('Save Due Date Time Successful')
         setError('');
+        setLoading('')
       }
     } catch (error) {
       console.error('Error while fetching data:', error);
@@ -98,11 +101,23 @@ function Count() {
             "Content-Type": "application/json",
           }
         });
+        console.log('getkeeptime',getkeeptime.data)
 
-        console.log('Time get successfully:', getkeeptime.data);
+        const { Keeptime } = getkeeptime.data; // Extract Keeptime array from the response
+        const updatedFixtime = Keeptime.map(data => ({
+          selectedDates: [dayjs(data.startTime * 1000), dayjs(data.endTime * 1000)],
+          code: data.code // Updating code received from server
+        }));
+        console.log('timedata', updatedFixtime);
 
-        if (getkeeptime.data = getkeeptime.data) {
-          setNoti('Save Due Date Time Successful, Clear for Reset New Due Date')
+        if (updatedFixtime.length != 0) {
+          setFixtime(updatedFixtime);
+          setNoti('Save Due Date Time Successful, Clear for Reset New Due Date');
+        }
+
+        if (updatedFixtime.length == 0) {
+          setFixtime(fixtime);
+          setNoti('');
         }
 
       } catch (error) {
@@ -167,6 +182,8 @@ function Count() {
       </div>
 
       {error && <div>{error}</div>}
+      {!noTi && <div>{loading}</div>}
+
       <div className='flex flex-row '>
         <button
           onClick={clearClick}

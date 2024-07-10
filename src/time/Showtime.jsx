@@ -5,7 +5,8 @@ import CountdownTimer from 'C:/Users/ASUS/mochi-frontend/src/time/CountdownTimer
 import dayjs from 'dayjs';
 import axios from 'axios';
 
-function Count() {
+//เก็บค่า setTimerValue ไว้ใช้กับไฟล์อื่น
+function Count({ setTimerValue }) {
   const { km } = useParams();
 
   const [selectedDates, setSelectedDates] = useState([null, null]);
@@ -48,6 +49,13 @@ function Count() {
     fetchgettime();
   }, [km]);
 
+  //ส่งค่า วันเวลาไปที่ fist.js
+  useEffect(() => {
+    if (setTimerValue) {
+      setTimerValue(calculateSeconds());
+    }
+  }, [startTime, endTime, timeSec]);
+
   const calculateSeconds = () => {
     const currentDate = new Date();
     const currentTimestampInMilliseconds = currentDate.getTime();
@@ -71,16 +79,29 @@ function Count() {
     return 0; // Default return value if conditions are not met
   };
 
+  const formattedDate = new Date(selectedDates[1]).toLocaleDateString('en-US', {
+    weekday: 'short',
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
+  });
+
   return (
-    <div className='flex flex-col items-center'>
+    <div className='flex flex-col items-center p-[10px] bg-[#4CFF97] w-[380px] shadow-[7px_7px_rgba(0,0,0,0.2)]'>
+
+      <div>
+        {(timeSec || showSeconds) && selectedDates[1] && (
+          <div className='flex items-center justify-center'>
+            <div className='text-[16px]'>Due Date Vote : </div>
+            <div className='text-[28px] drop-shadow-[4px_4px_1px_rgba(0,0,0,0.4)] ml-[7px]'>{formattedDate}</div>
+          </div>
+        )}
+      </div>      
+
       <div>
         {(timeSec || showSeconds) && <CountdownTimer initialSeconds={calculateSeconds()} />}
       </div>
-      <div>
-        {(timeSec || showSeconds) && selectedDates[1] && (
-          <div className='text-[18px]'>ระยะเวลาในการโหวต: {selectedDates[1].toString()}</div>
-        )}
-      </div>
+
     </div>
   );
 }
